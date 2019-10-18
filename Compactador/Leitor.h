@@ -3,9 +3,8 @@
 #ifndef Leitor
 #define Leitor
 
-FILE *arq;
-
-extern char lerChar();
-extern boolean acabou();
+extern void abrir(FILE *arq, char* path, char* modo);
+extern char lerChar(FILE *arq);
+extern boolean acabou(FILE *arq);
 
 #endif
