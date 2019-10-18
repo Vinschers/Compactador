@@ -34,6 +34,10 @@
 		<Unit filename="Compactador.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="FilaPrioridade.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FilaPrioridade.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
