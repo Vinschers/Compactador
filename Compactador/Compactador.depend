@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1571416640 source:c:\users\u18178\desktop\compactador\compactador\compactador.c
+	"Leitor.h"
+
+1571416564 c:\users\u18178\desktop\compactador\compactador\leitor.h
+	<stdio.h>
+	"Uteis.h"
+
+1571416806 c:\users\u18178\desktop\compactador\compactador\uteis.h
+
+1571416537 source:c:\users\u18178\desktop\compactador\compactador\leitor.c
+	<stdio.h>
+	"Leitor.h"
+
