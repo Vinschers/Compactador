@@ -3,7 +3,7 @@
 #ifndef Leitor
 #define Leitor
 
-extern void abrir(FILE *arq, char* path, char* modo);
+extern void abrir(FILE **arq, char* path, char* modo);
 extern char lerChar(FILE *arq);
 extern boolean acabou(FILE *arq);
 

@@ -12,3 +12,20 @@
 	<stdio.h>
 	"Leitor.h"
 
+1571449088 source:g:\felipe\projetos\2019\2 semestre\compactador\compactador\filaprioridade.c
+
+1571454206 source:g:\felipe\projetos\2019\2 semestre\compactador\compactador\leitor.c
+	<stdio.h>
+	"Leitor.h"
+	<errno.h>
+
+1571453977 g:\felipe\projetos\2019\2 semestre\compactador\compactador\leitor.h
+	<stdio.h>
+	"Uteis.h"
+
+1571449088 g:\felipe\projetos\2019\2 semestre\compactador\compactador\uteis.h
+
+1571454325 source:g:\felipe\projetos\2019\2 semestre\compactador\compactador\compactador.c
+	<string.h>
+	"Leitor.h"
+
