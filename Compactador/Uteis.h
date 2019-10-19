@@ -3,6 +3,7 @@
 typedef enum {
     False, True
 } boolean;
+
 typedef struct No
 {
     struct No *esq, *dir;

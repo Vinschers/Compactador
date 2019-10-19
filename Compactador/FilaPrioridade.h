@@ -1,17 +1,15 @@
 #ifndef FilaPrioridade
 #define FilaPrioridade
+#include "Uteis.h"
 
 typedef struct NoFila
 {
     struct NoFila* prox;
-    No* no;
+    No* dado;
+    boolean iniciada;
 } NoFila;
 
-extern void Inserir(No novo);
+extern NoFila novaFila();
+extern void inserir(NoFila* raiz, No* novo);
 
-typedef struct
-{
-
-} FilaPri;
-
-#endif /* FilaPrioridade 57 */
+#endif
