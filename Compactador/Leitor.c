@@ -3,7 +3,6 @@
 #include <errno.h>
 
 void abrir(FILE **arq, char* path, char* modo) {
-    printf("path: %s\n", path);
     *arq = (FILE*)fopen(path, modo);
     if (*arq == 0) {
         printf("NULL POINTER! erro: %s\n", strerror(errno));
