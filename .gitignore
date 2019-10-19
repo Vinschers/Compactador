@@ -54,3 +54,4 @@ dkms.conf
 # CodeBlocks
 *.layout
 *.depend
+Compactador/Compactador.layout
