@@ -24,9 +24,9 @@ void descompactar() {
 }
 
 char *get_path() {
-    char *ret;
+    char *ret = (char*)malloc(sizeof(char) * 256);
     printf("Digite o local do arquivo a ser compactado ou descompactado: ");
-    scanf("%s", ret);
+    scanf("%255s", ret);
     return ret;
 }
 int main(int qtdArgs, char *args[]) {
@@ -39,7 +39,7 @@ int main(int qtdArgs, char *args[]) {
         descompactar();
     else
         compactar();
-        
+
     return 0;
 }
 
