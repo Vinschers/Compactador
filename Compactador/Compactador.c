@@ -3,6 +3,7 @@
 #include "Uteis.h"
 #include "Leitor.h"
 #include "FilaPrioridade.h"
+#include "Bytizador.h"
 
 FILE *arq;
 char *path;
@@ -41,11 +42,33 @@ int main(int qtdArgs, char *args[]) {
     else
         compactar();
     */
-    mainTeste();
+    //mainTeste();
+
+    char* byte = (char*) malloc(8*sizeof(char));
+    int i;
+    char b;
+
+    byte[0] = '0';
+    byte[1] = '0';
+    byte[2] = '0';
+    byte[3] = '1';
+    byte[4] = '1';
+    byte[5] = '0';
+    byte[6] = '1';
+    byte[7] = '0';
+
+    printf("%c", byte[0]);
+
+    b = paraByte(byte);
+
+    for (i = 0; i < 8; i++) {
+        printf("%d", !!((b << i) & 0x80));
+    }
 
     return 0;
 }
 
+/*
 void print(NoFila no)
 {
     while(no.prox != NULL)
@@ -57,7 +80,6 @@ void print(NoFila no)
     printf("%i\n", no.dado->vezes);
 }
 
-/*
 int mainTeste() {
     NoFila n = novaFila();
     NoFila* per = &n;

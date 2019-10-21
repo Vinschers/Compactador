@@ -31,18 +31,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Bytizador.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Bytizador.h" />
 		<Unit filename="Compactador.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="FilaPrioridade.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="FilaPrioridade.h" />
 		<Unit filename="Leitor.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Leitor.h" />
 		<Unit filename="Uteis.h" />
-		<Unit filename="FilaPrioridade.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="FilaPrioridade.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
