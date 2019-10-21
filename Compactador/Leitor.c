@@ -6,6 +6,7 @@ void abrir(FILE **arq, char* path, char* modo) {
     *arq = (FILE*)fopen(path, modo);
     if (*arq == 0) {
         printf("NULL POINTER! erro: %s\n", strerror(errno));
+        exit(0);
     }
     //return arq;
 }

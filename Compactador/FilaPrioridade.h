@@ -12,4 +12,8 @@ typedef struct NoFila
 extern NoFila novaFila();
 extern void inserir(NoFila* raiz, No* novo);
 
+//FILA DO SCHERER
+extern NoFila novaFilaS();
+extern void inserirS(NoFila* raiz, No* novo);
+
 #endif
