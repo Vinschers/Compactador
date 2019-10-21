@@ -30,6 +30,7 @@ char *get_path() {
     return ret;
 }
 int main(int qtdArgs, char *args[]) {
+    /*
     if (qtdArgs > 1) {
         *path = *args[1];
     } else {
@@ -39,38 +40,46 @@ int main(int qtdArgs, char *args[]) {
         descompactar();
     else
         compactar();
+    */
+    mainTeste();
 
     return 0;
 }
 
+void print(NoFila no)
+{
+    while(no.prox != NULL)
+    {
+        printf("%i", no.dado->vezes);
+        no = *no.prox;
+    }
+
+    printf("%i\n", no.dado->vezes);
+}
+
+/*
 int mainTeste() {
     NoFila n = novaFila();
     NoFila* per = &n;
     No n1, n2, n3, n4, n5;
 
-    n1.vezes = 5;
+    n1.vezes = 1;
     n2.vezes = 2;
-    n3.vezes = 1;
-    n4.vezes = 2;
-    n5.vezes = 3;
+    n3.vezes = 3;
+    n4.vezes = 4;
+    n5.vezes = 5;
 
     inserir(&n, &n1);
-    printf("%i", n.dado->vezes);
+    printf("%p\n",n);
     inserir(&n, &n2);
-    printf("%i", n.dado->vezes);
+    printf("%p\n",n.prox);
     inserir(&n, &n3);
-    printf("%i", n.dado->vezes);
+    printf("%p\n",n);
     inserir(&n, &n4);
-    printf("%i", n.dado->vezes);
+    printf("%p\n",n);
     inserir(&n, &n5);
-    printf("%i\n", n.dado->vezes);
-
-    do
-    {
-        printf("%i ", per -> dado -> vezes);
-        per = per -> prox;
-    }
-    while(per -> prox != NULL);
+    printf("%p\n",n);
 
     return 0;
 }
+*/
