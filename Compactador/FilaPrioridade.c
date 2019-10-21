@@ -16,26 +16,32 @@ NoFila novaFila()
 void inserir(NoFila* raiz, No* novo)
 {
     NoFila noFila = novaFila();
-    NoFila* percorre = raiz;
+    NoFila r = *raiz;
 
     noFila.dado = novo;
-    noFila.prox = NULL;
     noFila.iniciada = True;
 
     if(raiz -> iniciada == True)
     {
-        if(novo -> vezes < raiz -> dado -> vezes)
+        if(novo -> vezes <= raiz -> dado -> vezes)
         {
-            noFila.prox = raiz;
+            NoFila aux = *raiz;
             *raiz = noFila;
+
+            r = *raiz;
+
+            noFila = aux;
+            raiz -> prox = &noFila;
         }
         else
         {
-            while(percorre -> prox != NULL && percorre -> dado -> vezes > percorre -> prox -> dado -> vezes)
-                percorre = percorre -> prox;
+            NoFila* percorre = raiz;
 
-            noFila.prox = percorre -> prox;
-            percorre -> prox = &noFila;
+            while(percorre->prox != NULL && novo -> vezes > percorre->dado -> vezes)
+                percorre = percorre->prox;
+
+            noFila.prox = percorre->prox;
+            percorre->prox = &noFila;
         }
     }
     else
