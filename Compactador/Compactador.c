@@ -7,13 +7,35 @@
 
 FILE *arq;
 char *path;
-NoFila *fila;
+NoFila fila;
 
 void montarFila() {
     abrir(&arq, path, "r");
+    int freq[256];
+    int i;
+    for (i = 0; i < 256; ++i)
+        freq[i] = 0;
     while(!acabou(arq)) {
         char atual = lerChar(arq);
+        freq[(int)atual]++;
         printf("%c", atual);
+    }
+    fila = novaFilaS();
+    for (i = 0; i < 256; ++i) {
+        if (freq[i] > 0) {
+            No *n = (No*)malloc(sizeof(No));
+            char c = (char)i;
+            n->byte = c;
+            n->vezes = freq[i];
+            inserirS(&fila, n);
+            free(n);
+        }
+    }
+    NoFila* per = &fila;
+    while(per != NULL)
+    {
+        printf("%c: %i\n", per -> dado -> byte, per->dado->vezes);
+        per = per -> prox;
     }
 }
 
