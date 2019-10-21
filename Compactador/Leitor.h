@@ -4,7 +4,7 @@
 #define Leitor
 
 extern void abrir(FILE **arq, char* path, char* modo);
-extern char lerChar(FILE *arq);
+extern unsigned char lerChar(FILE *arq);
 extern boolean acabou(FILE *arq);
 
 #endif

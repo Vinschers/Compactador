@@ -11,8 +11,8 @@ void abrir(FILE **arq, char* path, char* modo) {
     //return arq;
 }
 
-char lerChar(FILE *arq) {
-    char ret = '5';
+unsigned char lerChar(FILE *arq) {
+    unsigned char ret = '5';
     fread(&ret, sizeof(char), 1, arq);
     return ret;
 }
