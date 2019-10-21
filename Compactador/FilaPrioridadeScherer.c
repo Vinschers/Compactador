@@ -39,7 +39,13 @@ void printarFila(NoFila *fila) {
     NoFila* per = fila;
     while(per != NULL)
     {
-        printf("char %i(\'%c\'): %i\n", (unsigned char)per -> dado -> byte, per -> dado -> byte, per->dado->vezes);
+        printf("char %i: %i\n", (unsigned char)per -> dado -> byte, per->dado->vezes);
         per = per -> prox;
     }
+}
+
+No* pop(NoFila *fila) {
+    No *ret = fila->dado;
+    fila = fila->prox;
+    return ret;
 }

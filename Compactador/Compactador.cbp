@@ -42,6 +42,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FilaPrioridade.h" />
+		<Unit filename="FilaPrioridadeScherer.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="Leitor.c">
 			<Option compilerVar="CC" />
 		</Unit>

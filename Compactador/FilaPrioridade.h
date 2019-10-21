@@ -16,5 +16,6 @@ extern void inserir(NoFila* raiz, No* novo);
 extern NoFila novaFilaS();
 extern void inserirS(NoFila* raiz, No* novo);
 extern void printarFila(NoFila *fila);
+extern No* pop(NoFila *fila);
 
 #endif

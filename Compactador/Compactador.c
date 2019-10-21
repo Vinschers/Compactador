@@ -8,6 +8,7 @@
 FILE *arq;
 char *path;
 NoFila fila;
+unsigned short int qtdFila;
 
 void montarFila() {
     abrir(&arq, path, "rb");
@@ -15,6 +16,7 @@ void montarFila() {
     int i;
     for (i = 0; i < 256; ++i)
         freq[i] = 0;
+    qtdFila = 0;
     while(!acabou(arq)) {
         unsigned char atual = lerChar(arq);
         freq[(int)atual]++;
@@ -29,14 +31,29 @@ void montarFila() {
             n->byte = c;
             n->vezes = freq[i];
             inserirS(&fila, n);
+            qtdFila++;
             free(n);
         }
     }
     printarFila(&fila);
 }
 
+void montarArvore() {
+    while(qtdFila >= 2) {
+        No *primeiro = pop(&fila);
+        No *segundo = pop(&fila);
+        No *novo = (No*)malloc(sizeof(No));
+        novo->esq = primeiro;
+        novo->dir = segundo;
+        inserirS(&fila, novo);
+        qtdFila--;
+    }
+    //printarFila(&fila);
+}
+
 void compactar() {
     montarFila();
+    montarArvore();
 }
 void descompactar() {
     //
