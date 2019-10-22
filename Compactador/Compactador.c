@@ -4,16 +4,19 @@
 #include "Leitor.h"
 #include "FilaPrioridade.h"
 #include "Bytizador.h"
+#include "Arvore.h"
 
 FILE *arq;
 char *path;
 NoFila *fila;
 No *arvore;
+CodByte *cods;
 
 void compactar() {
     abrir(&arq, path, "rb");
     int qtd = montarFila(arq, &fila);
     arvore = montarArvore(fila, qtd);
+    cods = arvoreParaVetor(arvore, qtd);
 }
 void descompactar() {
     //

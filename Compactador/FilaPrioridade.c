@@ -12,6 +12,7 @@ NoFila* inserir(NoFila *raiz, No *novo) {
     novoNo->vezes = novo->vezes;
     novoNo->esq = novo->esq;
     novoNo->dir = novo->dir;
+    novoNo->valido = novo->valido;
     nf->dado = novoNo;
     nf->valida = True;
 
@@ -88,6 +89,7 @@ int montarFila(FILE *arq, NoFila **fila) {
             unsigned char c = (unsigned char)i;
             n->byte = c;
             n->vezes = freq[i];
+            n->valido = True;
             *fila = inserir(*fila, n);
             qtdFila++;
             free(n);
