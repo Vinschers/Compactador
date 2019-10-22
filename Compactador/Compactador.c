@@ -8,6 +8,7 @@
 FILE *arq;
 char *path;
 NoFila *fila;
+No *arvore;
 unsigned short int qtdFila;
 
 void montarFila() {
@@ -20,9 +21,7 @@ void montarFila() {
     while(!acabou(arq)) {
         unsigned char atual = lerChar(arq);
         freq[(int)atual]++;
-        //printf("%c", atual);
     }
-    printf("\n\n\n");
     fila = novaFilaS();
     for (i = 0; i < 256; ++i) {
         if (freq[i] > 0) {
@@ -35,26 +34,26 @@ void montarFila() {
             free(n);
         }
     }
-    printarFila(fila);
 }
 
 void montarArvore() {
     while(qtdFila >= 2) {
-        No *primeiro = pop(fila);
-        No *segundo = pop(fila);
+        No *primeiro = pop(&fila);
+        No *segundo = pop(&fila);
         No *novo = (No*)malloc(sizeof(No));
         novo->esq = primeiro;
         novo->dir = segundo;
+        novo->vezes = primeiro->vezes + segundo->vezes;
+        novo->byte = '\0';
         fila = inserirS(fila, novo);
         qtdFila--;
     }
-    printf("\n\n");
-    printarFila(fila);
+    arvore = pop(&fila);
 }
 
 void compactar() {
     montarFila();
-    //montarArvore();
+    montarArvore();
 }
 void descompactar() {
     //

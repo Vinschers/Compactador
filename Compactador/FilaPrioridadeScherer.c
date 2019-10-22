@@ -13,9 +13,11 @@ NoFila* inserirS(NoFila *raiz, No *novo) {
     novoNo->dir = novo->dir;
     nf->dado = novoNo;
 
+    if (atual == NULL)
+        atual = novaFilaS();
     if(atual->dado == NULL) {
         atual->dado = novoNo;
-        return raiz;
+        return atual;
     } else {
         if (atual->dado->vezes > novo->vezes) {
             nf->prox = atual;
@@ -51,8 +53,8 @@ void printarFila(NoFila *fila) {
     }
 }
 
-No* pop(NoFila *fila) {
-    No *ret = fila->dado;
-    fila = fila->prox;
+No* pop(NoFila **fila) {
+    No *ret = (*fila)->dado;
+    *fila = (*fila)->prox;
     return ret;
 }
