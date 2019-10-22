@@ -48,7 +48,7 @@ void printarFila(NoFila *fila) {
     NoFila* per = fila;
     while(per != NULL)
     {
-        printf("char %i: %i\n", (unsigned char)per -> dado -> byte, per->dado->vezes);
+        printf("char %i: %llu\n", (unsigned char)per -> dado -> byte, (unsigned long long int)per->dado->vezes);
         per = per -> prox;
     }
 }

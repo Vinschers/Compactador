@@ -6,5 +6,6 @@
 extern void abrir(FILE **arq, char* path, char* modo);
 extern unsigned char lerChar(FILE *arq);
 extern boolean acabou(FILE *arq);
+extern char* lerVariosChars(FILE *arq, int qtdChars);
 
 #endif
