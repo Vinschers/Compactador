@@ -3,7 +3,7 @@
 #include "FilaPrioridade.h"
 #include "Uteis.h"
 
-void inserirS(NoFila *raiz, No *novo) {
+NoFila* inserirS(NoFila *raiz, No *novo) {
     NoFila *atual = raiz;
     NoFila *nf = (NoFila*)malloc(sizeof(NoFila));
     No *novoNo = (No*)malloc(sizeof(No));
@@ -15,23 +15,30 @@ void inserirS(NoFila *raiz, No *novo) {
 
     if(atual->dado == NULL) {
         atual->dado = novoNo;
+        return raiz;
     } else {
-        while(atual->prox != NULL) {
-            if (atual->prox->dado == NULL)
-                break;
-            if (atual->prox->dado->vezes > novoNo->vezes)
-                break;
-            atual = atual-> prox;
+        if (atual->dado->vezes > novo->vezes) {
+            nf->prox = atual;
+            return nf;
+        } else {
+            while(atual->prox != NULL) {
+                if (atual->prox->dado == NULL)
+                    break;
+                if (atual->prox->dado->vezes > novoNo->vezes)
+                    break;
+                atual = atual-> prox;
+            }
+            nf->prox = atual->prox;
+            atual->prox = nf;
+            return raiz;
         }
-        nf->prox = atual->prox;
-        atual->prox = nf;
     }
 }
 
-NoFila novaFilaS() {
-    NoFila raiz;
-    raiz.dado = NULL;
-    raiz.prox = NULL;
+NoFila* novaFilaS() {
+    NoFila *raiz = (NoFila*)malloc(sizeof(NoFila));
+    raiz->dado = NULL;
+    raiz->prox = NULL;
     return raiz;
 }
 

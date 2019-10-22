@@ -13,8 +13,8 @@ extern NoFila novaFila();
 extern void inserir(NoFila* raiz, No* novo);
 
 //FILA DO SCHERER
-extern NoFila novaFilaS();
-extern void inserirS(NoFila* raiz, No* novo);
+extern NoFila *novaFilaS();
+extern NoFila *inserirS(NoFila* raiz, No* novo);
 extern void printarFila(NoFila *fila);
 extern No* pop(NoFila *fila);
 
