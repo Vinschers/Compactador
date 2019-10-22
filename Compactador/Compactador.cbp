@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Arvore.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Arvore.h" />
 		<Unit filename="Bytizador.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -42,7 +46,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FilaPrioridade.h" />
-		<Unit filename="FilaPrioridadeScherer.c">
+		<Unit filename="FilaPrioridadeTeste.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Leitor.c">

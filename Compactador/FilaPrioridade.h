@@ -9,13 +9,10 @@ typedef struct NoFila
     boolean valida;
 } NoFila;
 
-extern NoFila* novaFila();
-extern NoFila* inserir(NoFila* raiz, No* novo);
-
-//FILA DO SCHERER
-extern NoFila *novaFilaS();
-extern NoFila *inserirS(NoFila* raiz, No* novo);
+extern NoFila *novaFila();
+extern NoFila *inserir(NoFila* raiz, No* novo);
 extern void printarFila(NoFila *fila);
 extern No* pop(NoFila **fila);
+extern int montarFila(FILE *arq, NoFila **fila);
 
 #endif

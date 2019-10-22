@@ -1,133 +1,97 @@
+#include <stdio.h>
 #include <stdlib.h> /* Permite usar "NULL" */
 #include "Uteis.h"
 #include "FilaPrioridade.h"
+#include "Leitor.h"
 
-NoFila* novaFila()
-{
-    NoFila* no = (NoFila*) malloc(sizeof(NoFila));
+NoFila* inserir(NoFila *raiz, No *novo) {
+    NoFila *atual = raiz;
+    NoFila *nf = (NoFila*)malloc(sizeof(NoFila));
+    No *novoNo = (No*)malloc(sizeof(No));
+    novoNo->byte = novo->byte;
+    novoNo->vezes = novo->vezes;
+    novoNo->esq = novo->esq;
+    novoNo->dir = novo->dir;
+    nf->dado = novoNo;
+    nf->valida = True;
 
-    no -> dado = NULL;
-    no -> prox = NULL;
-    no -> valida = True;
-
-    return no;
-}
-
-/*
-NoFila* inserirLeitura(NoFila* raiz, char byte)
-{
-    NoFila* percorre = raiz;
-
-    while(percorre != NULL)
-    {
-        if(percorre->dado->byte == byte)
-        {
-            No* substituir = percorre->dado;
-            No* aux = percorre->dado;
-            percorre->dado->vezes++;
-
-            while(percorre->prox != NULL && percorre->dado->vezes > percorre->prox->dado->vezes)
-                percorre = percorre->prox;
-
-            *percorre->dado = *substituir;
-            *substituir = *aux;
-
+    if (atual == NULL)
+        atual = novaFila();
+    if(atual->dado == NULL) {
+        atual->dado = novoNo;
+        atual->valida = True;
+        return atual;
+    } else {
+        if (atual->dado->vezes > novo->vezes) {
+            nf->prox = atual;
+            return nf;
+        } else {
+            while(atual->prox != NULL) {
+                if (atual->prox->dado == NULL)
+                    break;
+                if (atual->prox->dado->vezes > novoNo->vezes)
+                    break;
+                atual = atual-> prox;
+            }
+            nf->prox = atual->prox;
+            atual->prox = nf;
             return raiz;
         }
-
-        percorre = percorre->prox;
     }
-
-    {
-        NoFila* novaF = novaFila();
-        No* novo = novoNo();
-
-        novo->byte = byte;
-        novo->vezes = 1;
-
-        novaF->dado = novo;
-        novaF->prox = raiz;
-
-        return novaF;
-    }
-
-    return NULL;
 }
 
-NoFila* inserir(NoFila* raiz, No* novo)
-{
-    NoFila* novoF = novaFila();
-    novoF -> dado = novo;
-
-    if(raiz == NULL)
-        return novoF;
-
-    if(raiz->dado->byte != novo->byte && raiz->dado->vezes > novo->vezes)
-    {
-        novoF->prox = raiz;
-        return novoF;
-    }
-
-    {
-        NoFila* percorre = raiz;
-        NoFila* ant = NULL;
-
-        while(percorre != NULL)
-        {
-            ant = percorre;
-            percorre = percorre -> prox;
-        }
-
-        if(raiz->valida == True && ant->dado->byte == novo->byte)
-        {
-            ant->dado->vezes++;
-
-            free(novo);
-            free(novoF);
-
-            return raiz;
-        }
-
-        novoF->prox = ant->prox;
-        ant->prox = novoF;
-    }
-
+NoFila* novaFila() {
+    NoFila *raiz = (NoFila*)malloc(sizeof(NoFila));
+    raiz->dado = NULL;
+    raiz->prox = NULL;
     return raiz;
 }
 
-/*
-NoFila* inserir(NoFila* raiz, No* novo)
-{
-    NoFila noFila = novaFila();
-    NoFila r = *raiz;
-
-    noFila.dado = novo;
-    noFila.iniciada = True;
-
-    if(raiz -> iniciada == True)
+void printarFila(NoFila *fila) {
+    NoFila* per = fila;
+    while(per != NULL)
     {
-        if(novo -> vezes <= raiz -> dado -> vezes)
-        {
-            NoFila aux = *raiz;
-            *raiz = noFila;
+        printf("char %i: %llu\n", (unsigned char)per -> dado -> byte, (unsigned long long int)per->dado->vezes);
+        per = per -> prox;
+    }
+}
 
-            r = *raiz;
+No* pop(NoFila **fila) {
+    No *ret = (*fila)->dado;
+    *fila = (*fila)->prox;
+    return ret;
+}
 
-            noFila = aux;
-            raiz -> prox = &noFila;
-        }
-        else
-        {
-            NoFila* percorre = raiz;
+int montarFila(FILE *arq, NoFila **fila) {
+    int qtdChars = 1;
+    int qtdFila;
+    unsigned long long int freq[256];
+    int i;
+    for (i = 0; i < 256; ++i)
+        freq[i] = 0;
 
-            while(percorre->prox != NULL && novo -> vezes > percorre->dado -> vezes)
-                percorre = percorre->prox;
+    fseek(arq, 0, SEEK_END);
+    qtdChars = ftell(arq) / 8;
+    fseek(arq, 0, SEEK_SET);
 
-            noFila.prox = percorre->prox;
-            percorre->prox = &noFila;
+    while(!acabou(arq)) {
+        char *vet = lerVariosChars(arq, qtdChars);
+        for(i = 0; i < qtdChars; i++)
+            freq[(unsigned char)vet[i]]++;
+        free(vet);
+    }
+    qtdFila = 0;
+    *fila = novaFila();
+    for (i = 0; i < 256; ++i) {
+        if (freq[i] > 0) {
+            No *n = (No*)malloc(sizeof(No));
+            unsigned char c = (unsigned char)i;
+            n->byte = c;
+            n->vezes = freq[i];
+            *fila = inserir(*fila, n);
+            qtdFila++;
+            free(n);
         }
     }
-    else
-        *raiz = noFila;
+    return qtdFila;
 }
-*/
