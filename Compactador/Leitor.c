@@ -17,6 +17,12 @@ unsigned char lerChar(FILE *arq) {
     return ret;
 }
 
+char* lerVariosChars(FILE *arq, int qtdChars) {
+    char *vet = (char*)malloc(qtdChars*sizeof(char));
+    fread(vet, sizeof(char), qtdChars, arq);
+    return vet;
+}
+
 
 boolean acabou(FILE *arq) {
     int atual = ftell(arq);

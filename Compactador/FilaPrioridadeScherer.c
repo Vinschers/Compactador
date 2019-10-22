@@ -13,9 +13,11 @@ NoFila* inserirS(NoFila *raiz, No *novo) {
     novoNo->dir = novo->dir;
     nf->dado = novoNo;
 
+    if (atual == NULL)
+        atual = novaFilaS();
     if(atual->dado == NULL) {
         atual->dado = novoNo;
-        return raiz;
+        return atual;
     } else {
         if (atual->dado->vezes > novo->vezes) {
             nf->prox = atual;
@@ -46,13 +48,13 @@ void printarFila(NoFila *fila) {
     NoFila* per = fila;
     while(per != NULL)
     {
-        printf("char %c: %i\n", (unsigned char)per -> dado -> byte, per->dado->vezes);
+        printf("char %i: %llu\n", (unsigned char)per -> dado -> byte, (unsigned long long int)per->dado->vezes);
         per = per -> prox;
     }
 }
 
-No* pop(NoFila *fila) {
-    No *ret = fila->dado;
-    fila = fila->prox;
+No* pop(NoFila **fila) {
+    No *ret = (*fila)->dado;
+    *fila = (*fila)->prox;
     return ret;
 }

@@ -7,7 +7,7 @@ typedef enum {
 typedef struct No
 {
     struct No *esq, *dir;
-    int vezes;
+    unsigned long long int vezes;
     char byte;
 } No;
 
