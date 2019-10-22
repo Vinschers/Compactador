@@ -49,6 +49,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Leitor.h" />
+		<Unit filename="Uteis.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="Uteis.h" />
 		<Extensions>
 			<code_completion />

@@ -6,11 +6,11 @@ typedef struct NoFila
 {
     struct NoFila* prox;
     No* dado;
-    boolean iniciada;
+    boolean valida;
 } NoFila;
 
-extern NoFila novaFila();
-extern void inserir(NoFila* raiz, No* novo);
+extern NoFila* novaFila();
+extern NoFila* inserir(NoFila* raiz, No* novo);
 
 //FILA DO SCHERER
 extern NoFila *novaFilaS();

@@ -10,4 +10,6 @@ typedef struct No
     int vezes;
     char byte;
 } No;
+
+extern No* novoNo();
 #endif
