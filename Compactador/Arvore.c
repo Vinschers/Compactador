@@ -37,34 +37,36 @@ CodByte* arvoreParaVetor(No *no, int qtd)
 {
     CodByte *ret = (CodByte*)malloc(qtd * sizeof(CodByte));
     int acesso = 0;
-    NoPilha *pilha = NULL;
-    pilha = empilhar(pilha, novaPilha(no));
+    NoFilAr *filaTudo = NULL;
+    NoFilAr *filaValida = NULL;
+    filaTudo = enfileirar(filaTudo, novaFilAr(no));
     char *atual = "\0";
-    while(pilha) {
-        NoPilha *p = pilha;
-        atual = p->cod;
+    while(filaTudo) {
+        NoFilAr *f = filaTudo;
+        atual = f->cod;
         char *novo = (char*)malloc(strlen(atual) * sizeof(char) + 1);
         strcpy(novo, atual);
-        if (p->dado->esq != NULL) {
+        if (f->dado->esq != NULL) {
             strcat(novo, "0");
-            NoPilha *n = novaPilha(NULL);
-            n->dado = pilha->dado->esq;
+            NoFilAr *n = novaFilAr(NULL);
+            n->dado = f->dado->esq;
             n->cod = novo;
-            pilha = empilhar(pilha, n);
+            filaTudo = enfileirar(filaTudo, n);
         }
-        if (p->dado->dir != NULL) {
+        if (f->dado->dir != NULL) {
             strcat(novo, "1");
-            NoPilha *n = novaPilha(NULL);
-            n->dado = pilha->dado->dir;
+            NoFilAr *n = novaFilAr(NULL);
+            n->dado = f->dado->dir;
             n->cod = "";
-            pilha = empilhar(pilha, n);
+            filaTudo = enfileirar(filaTudo, n);
         }
-        if (!pilha->dado->valido) {
-            pilha = desempilhar(pilha);
+        if (filaTudo->dado->valido == False) {
+            desenfileirar(filaTudo);
+        } else {
+            filaValida = enfileirar(filaValida, desenfileirar(filaTudo));
         }
     }
-    //pilha = inverterPilha(pilha);
-    NoPilha *per = pilha;
+    NoFilAr *per = filaValida;
     while(per != NULL) {
         printf("char %d: %s", (unsigned char)per->dado->byte, per->cod);
         per = per->prox;

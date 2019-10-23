@@ -12,7 +12,7 @@ typedef struct NoFilAr
 
 extern NoFilAr* novaFilAr(No* dado);
 extern NoFilAr* enfileirar(NoFilAr* fila, NoFilAr* novo);
-extern void desenfileirar(NoFilAr* fila);
+extern NoFilAr* desenfileirar(NoFilAr* fila);
 //extern NoFilAr* inverterPilha(NoFilAr* fila);
 //extern boolean pilhaVazia(NoFilAr* fila);
 

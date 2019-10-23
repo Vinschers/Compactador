@@ -21,15 +21,16 @@ NoFilAr* enfileirar(NoFilAr* fila, NoFilAr* novo)
     return novo;
 }
 
-void desenfileirar(NoFilAr* fila)
+NoFilAr* desenfileirar(NoFilAr* fila)
 {
     NoFilAr* ret = fila;
 
     while(ret->prox->prox != NULL)
         ret = ret->prox;
 
-    free(ret->prox);
+    NoFilAr *aux = ret->prox;
     ret->prox = NULL;
+    return aux;
 }
 
 /*
