@@ -90,6 +90,8 @@ int montarFila(FILE *arq, NoFila **fila) {
             n->byte = c;
             n->vezes = freq[i];
             n->valido = True;
+            n->dir = NULL;
+            n->esq = NULL;
             *fila = inserir(*fila, n);
             qtdFila++;
             free(n);

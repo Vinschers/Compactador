@@ -37,9 +37,9 @@ CodByte* arvoreParaVetor(No *no, int qtd)
     CodByte *ret = (CodByte*)malloc(qtd * sizeof(CodByte));
     int *i = (int*)malloc(sizeof(int));
     *i = 0;
-    char *str = (char*)malloc(sizeof(char));
-    strcpy(str, "");
-    percorreArvore(str, no, &ret, i);
+
+    percorreArvore("\0", no, &ret, i);
+
     return ret;
 }
 
@@ -47,22 +47,21 @@ static void percorreArvore(char *codAtual, No *noAtual, CodByte **vet, int* aces
 {
     if(noAtual->esq == NULL && noAtual->dir == NULL)
         return;
+
+    char codNovo[strlen(codAtual) + 2];
+    strncpy(codNovo, codAtual, strlen(codAtual));
+    codNovo[strlen(codAtual) + 1] = '\0';
+
     if (noAtual->valido) {
         *vet[*acesso] = *novaCodByte(codAtual, noAtual->byte);
         *acesso++;
     }
     if (noAtual->esq != NULL) {
-        char *novoEsq = (char*)malloc((1 + strlen(codAtual)) * sizeof(char));
-        strcpy(novoEsq, codAtual);
-        strcat(novoEsq, "0");
-        percorreArvore(novoEsq, noAtual->esq, vet, acesso);
-        free(novoEsq);
+        codNovo[strlen(codAtual)] = '0';
+        percorreArvore(codNovo, noAtual->esq, vet, acesso);
     }
     if (noAtual->dir != NULL) {
-        char *novoDir = (char*)malloc((1 + strlen(codAtual)) * sizeof(char));
-        strcpy(novoDir, codAtual);
-        strcat(novoDir, "1");
-        percorreArvore(novoDir, noAtual->dir, vet, acesso);
-        free(novoDir);
+        codNovo[strlen(codAtual)] = '1';
+        percorreArvore(codNovo, noAtual->dir, vet, acesso);
     }
 }
