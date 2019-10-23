@@ -4,6 +4,7 @@
 #include "Uteis.h"
 #include "FilaPrioridade.h"
 #include "Arvore.h"
+#include "FilaArvore.h"
 
 CodByte* novaCodByte(char* cod, char byte)
 {
@@ -35,10 +36,41 @@ No* montarArvore(NoFila *fila, int qtdFila) {
 CodByte* arvoreParaVetor(No *no, int qtd)
 {
     CodByte *ret = (CodByte*)malloc(qtd * sizeof(CodByte));
-    int *i = (int*)malloc(sizeof(int));
-    *i = 0;
+    int acesso = 0;
+    NoPilha *pilha = NULL;
+    pilha = empilhar(pilha, novaPilha(no));
+    char *atual = "\0";
+    while(pilha) {
+        NoPilha *p = pilha;
+        atual = p->cod;
+        char *novo = (char*)malloc(strlen(atual) * sizeof(char) + 1);
+        strcpy(novo, atual);
+        if (p->dado->esq != NULL) {
+            strcat(novo, "0");
+            NoPilha *n = novaPilha(NULL);
+            n->dado = pilha->dado->esq;
+            n->cod = novo;
+            pilha = empilhar(pilha, n);
+        }
+        if (p->dado->dir != NULL) {
+            strcat(novo, "1");
+            NoPilha *n = novaPilha(NULL);
+            n->dado = pilha->dado->dir;
+            n->cod = "";
+            pilha = empilhar(pilha, n);
+        }
+        if (!pilha->dado->valido) {
+            pilha = desempilhar(pilha);
+        }
+    }
+    //pilha = inverterPilha(pilha);
+    NoPilha *per = pilha;
+    while(per != NULL) {
+        printf("char %d: %s", (unsigned char)per->dado->byte, per->cod);
+        per = per->prox;
+    }
 
-    percorreArvore("\0", no, &ret, i);
+    //percorreArvore("\0", no, &ret, i);
 
     return ret;
 }

@@ -15,6 +15,7 @@ CodByte *cods;
 void compactar() {
     abrir(&arq, path, "rb");
     int qtd = montarFila(arq, &fila);
+    printarFila(fila);
     arvore = montarArvore(fila, qtd);
     cods = arvoreParaVetor(arvore, qtd);
 }

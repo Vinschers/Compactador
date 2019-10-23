@@ -10,7 +10,7 @@ typedef struct NoPilha
     char* cod;
 } NoPilha;
 
-extern NoPilha* novaPilha();
+extern NoPilha* novaPilha(No* dado);
 extern NoPilha* empilhar(NoPilha* pilha, NoPilha* novo);
 extern NoPilha* desempilhar(NoPilha* pilha);
 extern NoPilha* inverterPilha(NoPilha* pilha);

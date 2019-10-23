@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include "Pilha.h"
 
-NoPilha* novaPilha()
+NoPilha* novaPilha(No* dado)
 {
     NoPilha* ret = (NoPilha*) malloc(sizeof(NoPilha));
 
     ret->cod = "";
-    ret->dado = NULL;
+    ret->dado = dado;
     ret->prox = NULL;
 
     return ret;
@@ -33,7 +33,7 @@ NoPilha* inverterPilha(NoPilha* pilha)
 {
     NoPilha* ret = NULL;
 
-    while(!pilha)
+    while(pilha)
         ret = empilhar(ret, desempilhar(pilha));
 
     return ret;

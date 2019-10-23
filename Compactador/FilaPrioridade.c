@@ -52,7 +52,7 @@ void printarFila(NoFila *fila) {
     NoFila* per = fila;
     while(per != NULL)
     {
-        printf("char %i: %llu\n", (unsigned char)per -> dado -> byte, (unsigned long long int)per->dado->vezes);
+        printf("char %c (%i): %llu\n", (signed char)per -> dado -> byte,(unsigned char)per -> dado -> byte, (unsigned long long int)per->dado->vezes);
         per = per -> prox;
     }
 }
@@ -76,10 +76,14 @@ int montarFila(FILE *arq, NoFila **fila) {
     fseek(arq, 0, SEEK_SET);
 
     while(!acabou(arq)) {
-        char *vet = lerVariosChars(arq, qtdChars);
-        for(i = 0; i < qtdChars; i++)
-            freq[(unsigned char)vet[i]]++;
-        free(vet);
+       /*char *vet = lerVariosChars(arq, 1);
+        for(i = 0; i < qtdChars; i++) {
+            //freq[(unsigned char)vet[i]]++;
+            printf("%c", (unsigned char)vet[i]);
+        }
+        free(vet);*/
+        char at = lerChar(arq);
+        freq[(unsigned char)at]++;
     }
     qtdFila = 0;
     *fila = novaFila();
