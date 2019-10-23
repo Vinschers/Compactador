@@ -53,6 +53,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Leitor.h" />
+		<Unit filename="Pilha.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pilha.h" />
 		<Unit filename="Uteis.c">
 			<Option compilerVar="CC" />
 		</Unit>
