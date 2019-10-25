@@ -5,19 +5,27 @@
 #include "FilaPrioridade.h"
 #include "Bytizador.h"
 #include "Arvore.h"
+#include "Escrevedor.h"
 
-FILE *arq;
 char *path;
-NoFila *fila;
-No *arvore;
-CodByte *cods;
 
 void compactar() {
-    abrir(&arq, path, "rb");
-    int qtd = montarFila(arq, &fila);
+    FILE *arqEnt, *arqSai;
+    NoFila *fila;
+    No *arvore;
+    CodByte *cods;
+    int qtd;
+
+    abrir(&arqEnt, path, "rb");
+    qtd = montarFila(arqEnt, &fila);
     printarFila(fila);
     arvore = montarArvore(fila, qtd);
     cods = arvoreParaVetor(arvore, qtd);
+    abrir(&arqSai, strcat(path, ".loli"), "wb");
+    escreverCompactador(arqEnt, arqSai, cods, qtd);
+
+    fclose(arqEnt);
+    fclose(arqSai);
 }
 void descompactar() {
     //
@@ -30,7 +38,8 @@ char *get_path() {
     return ret;
 }
 int main(int qtdArgs, char *args[]) {
-    arvore = NULL;
+    path = (char*)malloc(128 * sizeof(char));
+
     if (qtdArgs > 1) {
         *path = *args[1];
     } else {
@@ -40,5 +49,8 @@ int main(int qtdArgs, char *args[]) {
         descompactar();
     else
         compactar();
+
+    free(path);
+
     return 0;
 }

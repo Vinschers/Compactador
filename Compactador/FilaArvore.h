@@ -14,5 +14,6 @@ extern NoFilAr* novaFilAr(No* dado);
 extern void enfileirar(NoFilAr** fila, NoFilAr* novo);
 extern NoFilAr* desenfileirar(NoFilAr** fila);
 extern NoFilAr* ultimo(NoFilAr* fila);
+extern void inverterFila(NoFilAr **fila);
 
 #endif

@@ -101,38 +101,21 @@ CodByte* arvoreParaVetor(No *no, int qtd)
         }
     }
 
+    inverterFila(&filaValida);
+
     NoFilAr *per = filaValida;
 
     printf("\n\n");
+    int i = 0;
 
     while(per != NULL) {
-        printf("char %c: %s\n", (unsigned char)per->dado->byte, per->cod);
+        ret[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
         per = per->prox;
+        i++;
     }
-    //percorreArvore("\0", no, &ret, i);
+
+    for(i = 0; i < qtd; ++i)
+        printf("char %c: %s\n", (unsigned char)ret[i].byte, ret[i].cod);
 
     return ret;
-}
-
-static void percorreArvore(char *codAtual, No *noAtual, CodByte **vet, int* acesso)
-{
-    if(noAtual->esq == NULL && noAtual->dir == NULL)
-        return;
-
-    char codNovo[strlen(codAtual) + 2];
-    strncpy(codNovo, codAtual, strlen(codAtual));
-    codNovo[strlen(codAtual) + 1] = '\0';
-
-    if (noAtual->valido) {
-        *vet[*acesso] = *novaCodByte(codAtual, noAtual->byte);
-        *acesso++;
-    }
-    if (noAtual->esq != NULL) {
-        codNovo[strlen(codAtual)] = '0';
-        percorreArvore(codNovo, noAtual->esq, vet, acesso);
-    }
-    if (noAtual->dir != NULL) {
-        codNovo[strlen(codAtual)] = '1';
-        percorreArvore(codNovo, noAtual->dir, vet, acesso);
-    }
 }

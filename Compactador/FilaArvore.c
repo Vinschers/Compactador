@@ -55,14 +55,20 @@ NoFilAr* ultimo(NoFilAr* fila)
     return ret;
 }
 
-/*
-NoPilha* inverterPilha(NoPilha* pilha)
+
+void inverterFila(NoFilAr** fila)
 {
-    NoPilha* ret = NULL;
+    NoFilAr* atual = *fila;
+    NoFilAr* antecessor = NULL;
+    NoFilAr* aux = NULL;
 
-    while(pilha)
-        ret = empilhar(ret, desempilhar(pilha));
+    while(atual) {
+        aux = atual->prox;
+        atual->prox = antecessor;
 
-    return ret;
+        antecessor = atual;
+        atual = aux;
+    }
+    *fila = antecessor;
 }
-*/
+

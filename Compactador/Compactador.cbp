@@ -42,6 +42,10 @@
 		<Unit filename="Compactador.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="Escrevedor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Escrevedor.h" />
 		<Unit filename="FilaArvore.c">
 			<Option compilerVar="CC" />
 		</Unit>

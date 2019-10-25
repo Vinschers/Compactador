@@ -1,6 +1,6 @@
 #include "Bytizador.h"
 
-char paraByte(char* strByte)
+char paraByte(char *strByte)
 {
     char ret = 0;
     char adiUm = 1;
@@ -15,4 +15,16 @@ char paraByte(char* strByte)
     }
 
     return ret;
+}
+
+void removerByte(char **str)
+{
+    char *ret = (char*) malloc((strlen(*str) - 8) * sizeof(char));
+    int i = 0;
+
+    for(; (*str)[7 + i] != '\0'; i++)
+        ret[i] = (*str)[8 + i];
+
+    //free(*str);
+    *str = ret;
 }
