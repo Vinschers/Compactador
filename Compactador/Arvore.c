@@ -45,29 +45,37 @@ CodByte* arvoreParaVetor(No *no, int qtd)
     while(filaTudo) {
         NoFilAr *f = ultimo(filaTudo);
         atual = f->cod;
-        char *novo = (char*)malloc(strlen(atual) * sizeof(char) + 1);
+        char novo[strlen(atual) + 1];
         strcpy(novo, atual);
 
         if (f->dado->dir != NULL) {
             strcat(novo, "1");
             NoFilAr *n = novaFilAr(NULL);
             n->dado = f->dado->dir;
-            n->cod = "";
+
+            n->cod = (char*) malloc((strlen(atual) + 1) * sizeof(char));
+            strcpy(n->cod, novo);
+
             enfileirar(&filaTudo, n);
         }
+
+        strcpy(novo, atual);
 
         if (f->dado->esq != NULL) {
             strcat(novo, "0");
             NoFilAr *n = novaFilAr(NULL);
             n->dado = f->dado->esq;
-            n->cod = novo;
+
+            n->cod = (char*) malloc((strlen(atual) + 1) * sizeof(char));
+            strcpy(n->cod, novo);
+
             enfileirar(&filaTudo, n);
         }
 
         if (f->dado->valido == False) {
             desenfileirar(&filaTudo);
         } else {
-            enfileirar(&filaValida, desenfileirar(filaTudo));
+            enfileirar(&filaValida, desenfileirar(&filaTudo));
         }
 
         {
@@ -92,12 +100,15 @@ CodByte* arvoreParaVetor(No *no, int qtd)
             printf("\n");
         }
     }
+
     NoFilAr *per = filaValida;
+
+    printf("\n\n");
+
     while(per != NULL) {
-        printf("char %d: %s", (unsigned char)per->dado->byte, per->cod);
+        printf("char %c: %s\n", (unsigned char)per->dado->byte, per->cod);
         per = per->prox;
     }
-
     //percorreArvore("\0", no, &ret, i);
 
     return ret;
