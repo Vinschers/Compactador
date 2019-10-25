@@ -22,7 +22,7 @@ void compactar() {
     arvore = montarArvore(fila, qtd);
     cods = arvoreParaVetor(arvore, qtd);
     abrir(&arqSai, strcat(path, ".loli"), "wb");
-    escreverCompactador(arqEnt, arqSai, cods, qtd);
+    escreverCompactador(arqEnt, arqSai, cods, arvore, qtd);
 
     fclose(arqEnt);
     fclose(arqSai);
