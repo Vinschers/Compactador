@@ -27,6 +27,7 @@ No* montarArvore(NoFila *fila, int qtdFila) {
         novo->byte = '\0';
         novo->valido = False;
         fila = inserir(fila, novo);
+
         qtdFila--;
     }
 
@@ -39,31 +40,56 @@ CodByte* arvoreParaVetor(No *no, int qtd)
     int acesso = 0;
     NoFilAr *filaTudo = NULL;
     NoFilAr *filaValida = NULL;
-    filaTudo = enfileirar(filaTudo, novaFilAr(no));
+    enfileirar(&filaTudo, novaFilAr(no));
     char *atual = "\0";
     while(filaTudo) {
-        NoFilAr *f = filaTudo;
+        NoFilAr *f = ultimo(filaTudo);
         atual = f->cod;
         char *novo = (char*)malloc(strlen(atual) * sizeof(char) + 1);
         strcpy(novo, atual);
-        if (f->dado->esq != NULL) {
-            strcat(novo, "0");
-            NoFilAr *n = novaFilAr(NULL);
-            n->dado = f->dado->esq;
-            n->cod = novo;
-            filaTudo = enfileirar(filaTudo, n);
-        }
+
         if (f->dado->dir != NULL) {
             strcat(novo, "1");
             NoFilAr *n = novaFilAr(NULL);
             n->dado = f->dado->dir;
             n->cod = "";
-            filaTudo = enfileirar(filaTudo, n);
+            enfileirar(&filaTudo, n);
         }
-        if (filaTudo->dado->valido == False) {
-            desenfileirar(filaTudo);
+
+        if (f->dado->esq != NULL) {
+            strcat(novo, "0");
+            NoFilAr *n = novaFilAr(NULL);
+            n->dado = f->dado->esq;
+            n->cod = novo;
+            enfileirar(&filaTudo, n);
+        }
+
+        if (f->dado->valido == False) {
+            desenfileirar(&filaTudo);
         } else {
-            filaValida = enfileirar(filaValida, desenfileirar(filaTudo));
+            enfileirar(&filaValida, desenfileirar(filaTudo));
+        }
+
+        {
+            NoFilAr* t = filaTudo;
+
+            while(t != NULL)
+            {
+                printf("%llu(%c) ", t->dado->vezes, t->dado->byte);
+                t = t->prox;
+            }
+
+            printf("| ");
+
+            t = filaValida;
+
+            while(t != NULL)
+            {
+                printf("%llu(%c) ", t->dado->vezes, t->dado->byte);
+                t = t->prox;
+            }
+
+            printf("\n");
         }
     }
     NoFilAr *per = filaValida;

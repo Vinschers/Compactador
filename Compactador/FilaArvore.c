@@ -12,25 +12,47 @@ NoFilAr* novaFilAr(No* dado)
     return ret;
 }
 
-NoFilAr* enfileirar(NoFilAr* fila, NoFilAr* novo)
+void enfileirar(NoFilAr** fila, NoFilAr* novo)
 {
-    if(fila == NULL)
-        return novo;
-
-    novo->prox = fila;
-    return novo;
+    novo->prox = *fila;
+    *fila = novo;
 }
 
-NoFilAr* desenfileirar(NoFilAr* fila)
+NoFilAr* desenfileirar(NoFilAr** fila)
 {
-    NoFilAr* ret = fila;
+    NoFilAr* ret = *fila;
+
+    if(*fila == NULL)
+        return fila;
+    if((*fila)->prox == NULL)
+    {
+        *fila = NULL;
+        return ret;
+    }
 
     while(ret->prox->prox != NULL)
         ret = ret->prox;
 
-    NoFilAr *aux = ret->prox;
-    ret->prox = NULL;
-    return aux;
+    {
+        NoFilAr* aux = ret->prox;
+        ret->prox = NULL;
+        ret = aux;
+    }
+
+    return ret;
+}
+
+NoFilAr* ultimo(NoFilAr* fila)
+{
+    NoFilAr* ret = fila;
+
+    if(fila == NULL)
+        return fila;
+
+    while(ret->prox != NULL)
+        ret = ret->prox;
+
+    return ret;
 }
 
 /*
