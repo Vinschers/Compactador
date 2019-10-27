@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h> /* Permite usar "NULL" */
 #include <string.h>
+#include <Math.h>
 #include "Uteis.h"
 #include "FilaPrioridade.h"
 #include "Arvore.h"
@@ -21,11 +22,13 @@ No* montarArvore(NoFila *fila, int qtdFila) {
         No *primeiro = pop(&fila);
         No *segundo = pop(&fila);
         No *novo = (No*)malloc(sizeof(No));
+
         novo->esq = primeiro;
         novo->dir = segundo;
         novo->vezes = primeiro->vezes + segundo->vezes;
         novo->byte = '\0';
         novo->valido = False;
+
         fila = inserir(fila, novo);
 
         qtdFila--;
@@ -34,88 +37,111 @@ No* montarArvore(NoFila *fila, int qtdFila) {
     return pop(&fila);
 }
 
-CodByte* arvoreParaVetor(No *no, int qtd)
+/*
+No* montarArvore(NoFila *fila, int qtdFila) {
+    No arv[(int)pow(2, (ceil(log2(qtdFila)) + 1) - 1)];
+    int i;
+
+    for(i = 0; qtdFila >= 2; i++) {
+        No *primeiro = pop(&fila);
+        No *segundo = pop(&fila);
+        No *novo = (No*)malloc(sizeof(No));
+
+        novo->vezes = primeiro->vezes + segundo->vezes;
+        novo->byte = '\0';
+        novo->valido = False;
+
+        arv[i] = *novo;
+        arv[2 * i + 1] = *primeiro;
+        arv[2 * i + 2] = *segundo;
+
+        free(novo);
+        free(primeiro);
+        free(segundo);
+
+        qtdFila--;
+    }
+
+    return arv;
+}
+*/
+
+void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char **atual)
 {
-    CodByte *ret = (CodByte*)malloc(qtd * sizeof(CodByte));
-    int acesso = 0;
+    *atual = f->cod;
+    char novo[strlen(*atual) + 1];
+    strcpy(novo, *atual);
+
+    if (f->dado->dir != NULL) {
+        strcat(novo, "1");
+        NoFilAr *n = novaFilAr(NULL);
+        n->dado = f->dado->dir;
+
+        n->cod = (char*) malloc((strlen(*atual) + 1) * sizeof(char));
+        strcpy(n->cod, novo);
+
+        enfileirar(filaTudo, n);
+    }
+
+    strcpy(novo, *atual);
+
+    if (f->dado->esq != NULL) {
+        strcat(novo, "0");
+        NoFilAr *n = novaFilAr(NULL);
+        n->dado = f->dado->esq;
+
+        n->cod = (char*) malloc((strlen(*atual) + 1) * sizeof(char));
+        strcpy(n->cod, novo);
+
+        enfileirar(filaTudo, n);
+    }
+
+    if (f->dado->valido == False) {
+        desenfileirar(filaTudo);
+    } else {
+        enfileirar(filaValida, desenfileirar(filaTudo));
+    }
+}
+
+CodCab arvoreParaVetor(No *no, int qtd)
+{
+    CodByte *cods = (CodByte*)malloc(qtd * sizeof(CodByte));
+    int i;
     NoFilAr *filaTudo = NULL;
     NoFilAr *filaValida = NULL;
-    enfileirar(&filaTudo, novaFilAr(no));
     char *atual = "\0";
-    while(filaTudo) {
-        NoFilAr *f = ultimo(filaTudo);
-        atual = f->cod;
-        char novo[strlen(atual) + 1];
-        strcpy(novo, atual);
+    char arvVetor[(int)pow(2, (ceil(log2(qtd)) + 1) - 1)];
 
-        if (f->dado->dir != NULL) {
-            strcat(novo, "1");
-            NoFilAr *n = novaFilAr(NULL);
-            n->dado = f->dado->dir;
+    enfileirar(&filaTudo, novaFilAr(no));
 
-            n->cod = (char*) malloc((strlen(atual) + 1) * sizeof(char));
-            strcpy(n->cod, novo);
+    for(i = 0; filaTudo; i++)
+    {
+        NoFilAr *fim = ultimo(filaTudo);
 
-            enfileirar(&filaTudo, n);
-        }
+        arvVetor[i] = fim->dado->valido ? '1' : '0';
 
-        strcpy(novo, atual);
-
-        if (f->dado->esq != NULL) {
-            strcat(novo, "0");
-            NoFilAr *n = novaFilAr(NULL);
-            n->dado = f->dado->esq;
-
-            n->cod = (char*) malloc((strlen(atual) + 1) * sizeof(char));
-            strcpy(n->cod, novo);
-
-            enfileirar(&filaTudo, n);
-        }
-
-        if (f->dado->valido == False) {
-            desenfileirar(&filaTudo);
-        } else {
-            enfileirar(&filaValida, desenfileirar(&filaTudo));
-        }
-
-        {
-            NoFilAr* t = filaTudo;
-
-            while(t != NULL)
-            {
-                printf("%llu(%c) ", t->dado->vezes, t->dado->byte);
-                t = t->prox;
-            }
-
-            printf("| ");
-
-            t = filaValida;
-
-            while(t != NULL)
-            {
-                printf("%llu(%c) ", t->dado->vezes, t->dado->byte);
-                t = t->prox;
-            }
-
-            printf("\n");
-        }
+        adicionaNaFila(&filaTudo, &filaValida, fim, &atual);
     }
 
     inverterFila(&filaValida);
 
     NoFilAr *per = filaValida;
 
-    printf("\n\n");
-    int i = 0;
-
+    i = 0;
     while(per != NULL) {
-        ret[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
+        cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
         per = per->prox;
         i++;
     }
 
-    for(i = 0; i < qtd; ++i)
-        printf("char %c: %s\n", (unsigned char)ret[i].byte, ret[i].cod);
+    {
+        CodCab ret;
 
-    return ret;
+        ret.cods = cods;
+        ret.cabecalho = arvVetor;
+
+        return ret;
+    }
+
+    //return ret;
 }

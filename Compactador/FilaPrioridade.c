@@ -63,11 +63,15 @@ No* pop(NoFila **fila) {
     return ret;
 }
 
-int montarFila(FILE *arq, NoFila **fila) {
+int montarFila(char *path, NoFila **fila) {
+    FILE* arq;
     int qtdChars = 1;
     int qtdFila;
     unsigned long long int freq[256];
     int i;
+
+    abrir(&arq, path, "rb");
+
     for (i = 0; i < 256; ++i)
         freq[i] = 0;
 
@@ -101,5 +105,8 @@ int montarFila(FILE *arq, NoFila **fila) {
             free(n);
         }
     }
+
+    fclose(arq);
+
     return qtdFila;
 }

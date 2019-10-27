@@ -1,0 +1,5 @@
+LIXO  AL    QTDVAL STR            CHARS
+3bits 4bits 8bits  2^(AL + 1) - 1 QTDVAL*8bits
+
+0 - Sem dado
+1 - Com dado

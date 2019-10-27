@@ -10,22 +10,18 @@
 char *path;
 
 void compactar() {
-    FILE *arqEnt, *arqSai;
     NoFila *fila;
     No *arvore;
-    CodByte *cods;
+    CodCab codCab;
     int qtd;
 
-    abrir(&arqEnt, path, "rb");
-    qtd = montarFila(arqEnt, &fila);
+    qtd = montarFila(path, &fila);
     printarFila(fila);
-    arvore = montarArvore(fila, qtd);
-    cods = arvoreParaVetor(arvore, qtd);
-    abrir(&arqSai, strcat(path, ".loli"), "wb");
-    escreverCompactador(arqEnt, arqSai, cods, arvore, qtd);
 
-    fclose(arqEnt);
-    fclose(arqSai);
+    arvore = montarArvore(fila, qtd);
+    codCab = arvoreParaVetor(arvore, qtd);
+
+    //escreverCompactador(path, cods, 0, qtd);
 }
 void descompactar() {
     //
