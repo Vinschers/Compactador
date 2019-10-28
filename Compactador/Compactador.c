@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include "conio.h"
 #include "Uteis.h"
 #include "Leitor.h"
 #include "FilaPrioridade.h"
@@ -8,6 +9,7 @@
 #include "Escrevedor.h"
 
 char *path;
+Barra barra;
 
 void compactar() {
     NoFila *fila;
@@ -15,13 +17,14 @@ void compactar() {
     CodCab *codCab;
     int qtd;
 
-    qtd = montarFila(path, &fila);
-    printarFila(fila);
+    qtd = montarFila(&barra, path, &fila);
+    //printarFila(fila);
 
-    arvore = montarArvore(fila, qtd);
-    codCab = arvoreParaVetor(arvore, qtd);
+    arvore = montarArvore(&barra, fila, qtd);
+    codCab = arvoreParaVetor(&barra, arvore, qtd);
 
-    escreverCompactador(path, codCab, strlen(codCab->cods[qtd - 1].cod), qtd);
+    escreverCompactador(&barra, path, codCab, strlen(codCab->cods[qtd - 1].cod), qtd);
+    free(codCab);
 }
 void descompactar() {
 }
@@ -33,18 +36,30 @@ char *get_path() {
     return ret;
 }
 int main(int qtdArgs, char *args[]) {
+    int y = 0;
     path = (char*)malloc(256 * sizeof(char));
+
+    barra.parteAtual = -1;
 
     if (qtdArgs > 1) {
         path = args[1];
         printf("%s", path);
     } else {
         path = get_path();
+        y++;
     }
     if (strstr(path, ".loli")) //extensao passivel de mudanca
+    {
+        printf("Descompactando \"%s\"...\n\n", path);
+        barra.y = ++y;
         descompactar();
+    }
     else
+    {
+        printf("Compactando \"%s\"...\n\n", path);
+        barra.y = ++y;
         compactar();
+    }
 
     free(path);
 

@@ -17,7 +17,7 @@ typedef struct
     char *cabecalho;
 } CodCab;
 
-extern No* montarArvore(NoFila *fila, int qtdFila);
+extern No* montarArvore(Barra *b, NoFila *fila, int qtdFila);
 extern CodByte* novaCodByte(char* cod, char byte);
-extern CodCab* arvoreParaVetor(No *no, int qtd);
+extern CodCab* arvoreParaVetor(Barra *b, No *no, int qtd);
 #endif

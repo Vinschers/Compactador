@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> /* Permite usar "NULL" */
+#include <conio.h>
 #include "Uteis.h"
 #include "FilaPrioridade.h"
 #include "Leitor.h"
@@ -63,7 +64,7 @@ No* pop(NoFila **fila) {
     return ret;
 }
 
-int montarFila(char *path, NoFila **fila) {
+int montarFila(Barra *b, char *path, NoFila **fila) {
     FILE* arq;
     int qtdChars = 1;
     int qtdFila;
@@ -72,12 +73,17 @@ int montarFila(char *path, NoFila **fila) {
 
     abrir(&arq, path, "rb");
 
+    avancarParte(b);
+
     for (i = 0; i < 256; ++i)
         freq[i] = 0;
 
     fseek(arq, 0, SEEK_END);
-    qtdChars = ftell(arq) / 8;
+    qtdChars = ftell(arq);
     fseek(arq, 0, SEEK_SET);
+    setMaxPorcentagem(b, qtdChars);
+
+    i = 0;
 
     while(!acabou(arq)) {
        /*char *vet = lerVariosChars(arq, 1);
@@ -88,7 +94,10 @@ int montarFila(char *path, NoFila **fila) {
         free(vet);*/
         char at = lerChar(arq);
         freq[(unsigned char)at]++;
+        setPorcentagem(b, ++i);
     }
+    avancarParte(b);
+    setMaxPorcentagem(b, 255);
     qtdFila = 0;
     *fila = novaFila();
     for (i = 0; i < 256; ++i) {
@@ -104,6 +113,7 @@ int montarFila(char *path, NoFila **fila) {
             qtdFila++;
             free(n);
         }
+        setPorcentagem(b, i);
     }
 
     fclose(arq);

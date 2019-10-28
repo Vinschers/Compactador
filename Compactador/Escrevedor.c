@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <math.h>
+#include <string.h>
 #include "Uteis.h"
 #include "Escrevedor.h"
 #include "Leitor.h"
@@ -19,21 +21,14 @@ char* getCod(CodByte *vet, char c, int qtd)
     return "";
 }
 
-void printarNoArv(FILE *arq, No* n)
+void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, char qtd, int *coutB) //É necessário controlar qtd (-1 e +1)
 {
-    fwrite(n->byte, sizeof(char), 1, arq);
-    fwrite(n->vezes, sizeof(unsigned long long int), 1, arq);
-    fwrite(&(n->valido), sizeof(boolean), 1, arq);
-}
-
-void printarCabecalho(FILE *arq, CodCab *vets, char qtd) //É necessário controlar qtd (-1 e +1)
-{
-    NoFilAr *filaTudo = NULL;
-    int qtdNos = 0;
-    int posFimArv = 0;
     char c = qtd;
+    int i = 1;
 
     fwrite(&c, sizeof(char), 2, arq); //bits lixo e altura
+    *coutB += 2;
+    setPorcentagem(b, *coutB);
 
     while(strlen(vets->cabecalho) > 0)
     {
@@ -42,32 +37,39 @@ void printarCabecalho(FILE *arq, CodCab *vets, char qtd) //É necessário controla
         fwrite(&c, sizeof(char), 1, arq);
 
         removerByte(&vets->cabecalho);
+        setPorcentagem(b, (*coutB)++);
     }
 
     {
-        int i;
 
         for(i = 0; i < qtd; i++)
         {
             c = vets->cods[i].byte;
 
             fwrite(&c, sizeof(char), 1, arq);
+            setPorcentagem(b, (*coutB)++);
         }
     }
 }
 
-void escreverCompactador(char *path, CodCab *vets, int altura, int qtd)
+void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd)
 {
     FILE *arqEntrada, *arqSaida;
     char *flush = (char*) malloc(sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
     char *atual = (char*) malloc(sizeof(char));
+    int *coutB = (int*)malloc(sizeof(int));
 
     abrir(&arqEntrada, path, "rb");
     abrir(&arqSaida, strcat(path, ".loli"), "wb");
+    avancarParte(b);
+    float bytesStrLouca = (float)strlen(vets->cabecalho)/8;
+    int bsl = (int)ceil(bytesStrLouca);
+    setMaxPorcentagem(b, 2 + bsl + qtd + qtdBytesArq(arqEntrada));
+    *coutB = 0;
 
     flush[0] = '\0';
 
-    printarCabecalho(arqSaida, vets, qtd);
+    printarCabecalho(b, arqSaida, vets, qtd, coutB);
     fseek(arqEntrada, 0, SEEK_SET);
 
     while(!acabou(arqEntrada)) {
@@ -82,18 +84,23 @@ void escreverCompactador(char *path, CodCab *vets, int altura, int qtd)
             fwrite(atual, sizeof(char), 1, arqSaida);
             removerByte(&flush);
         }
+        setPorcentagem(b, (*coutB)++);
     }
 
     *atual = paraByte(flush);
     fwrite(atual, sizeof(char), 1, arqSaida); //vai ignorar o lixo de memora pq nao importa mesmo
+    setPorcentagem(b, (*coutB)++);
 
     {
         char qtdBitsLixo = 8 - strlen(flush);
+        char *c = (char*)malloc(sizeof(char));
+        *c = juntarLixoAltura(qtdBitsLixo, altura);
         fseek(arqEntrada, 0, SEEK_SET);
-        fwrite(juntarLixoAltura(qtdBitsLixo, altura), sizeof(char), 1, arqSaida);
+        fwrite(c, sizeof(char), 1, arqSaida);
     }
 
     free(atual);
+    free(coutB);
 
     fclose(arqEntrada);
     fclose(arqSaida);

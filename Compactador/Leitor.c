@@ -31,3 +31,12 @@ boolean acabou(FILE *arq) {
     fseek(arq, atual, SEEK_SET);
     return atual == fim;
 }
+
+int qtdBytesArq(FILE *arq)
+{
+    int atual = ftell(arq);
+    fseek(arq, 0, SEEK_END);
+    int fim = ftell(arq);
+    fseek(arq, atual, SEEK_SET);
+    return fim;
+}

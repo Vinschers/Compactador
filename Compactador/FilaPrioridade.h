@@ -9,10 +9,10 @@ typedef struct NoFila
     boolean valida;
 } NoFila;
 
-extern NoFila *novaFila();
-extern NoFila *inserir(NoFila* raiz, No* novo);
+NoFila *novaFila();
+NoFila *inserir(NoFila* raiz, No* novo);
+No* pop(NoFila **fila);
 extern void printarFila(NoFila *fila);
-extern No* pop(NoFila **fila);
-extern int montarFila(char* path, NoFila **fila);
+extern int montarFila(Barra *b, char* path, NoFila **fila);
 
 #endif

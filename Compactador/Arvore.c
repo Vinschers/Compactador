@@ -17,7 +17,11 @@ CodByte* novaCodByte(char* cod, char byte)
     return ret;
 }
 
-No* montarArvore(NoFila *fila, int qtdFila) {
+No* montarArvore(Barra *b, NoFila *fila, int qtdFila) {
+    int qtdOriginal = qtdFila;
+    int qtdNos = qtdFila;
+    avancarParte(b);
+    setMaxPorcentagem(b, qtdFila - 1);
     while(qtdFila >= 2) {
         No *primeiro = pop(&fila);
         No *segundo = pop(&fila);
@@ -32,7 +36,11 @@ No* montarArvore(NoFila *fila, int qtdFila) {
         fila = inserir(fila, novo);
 
         qtdFila--;
+        qtdNos++;
+        setPorcentagem(b, qtdOriginal - qtdFila);
     }
+
+    setMaxPorcentagem(b, qtdNos);
 
     return pop(&fila);
 }
@@ -107,7 +115,7 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
     }
 }
 
-CodCab* arvoreParaVetor(No *no, int qtd)
+CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
 {
     CodByte *cods = (CodByte*)malloc(qtd * sizeof(CodByte));
     NoFilAr *filaTudo = NULL;
@@ -117,12 +125,16 @@ CodCab* arvoreParaVetor(No *no, int qtd)
     char *atual = "\0";
     char arvVetor[tamVetor];
 
+    avancarParte(b);
+
     for(i = 0; i < tamVetor; i++)
         arvVetor[i] = '0';
 
     arvVetor[tamVetor - 1] = '\0';
 
     enfileirar(&filaTudo, novaFilAr(no));
+
+    i = 1;
 
     while(filaTudo)
     {
@@ -131,6 +143,8 @@ CodCab* arvoreParaVetor(No *no, int qtd)
         arvVetor[fim->indice] = fim->dado->valido ? '1' : '0';
 
         adicionaNaFila(&filaTudo, &filaValida, fim, &atual);
+
+        setPorcentagem(b, i++);
     }
 
     inverterFila(&filaValida);
