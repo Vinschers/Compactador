@@ -146,11 +146,9 @@ CodCab* arvoreParaVetor(No *no, int qtd)
         CodCab* ret = (CodCab*) malloc(sizeof(CodCab));
 
         ret->cods = cods;
-        ret->cabecalho = arvVetor;
+        ret->cabecalho = (char*)malloc(sizeof(char) * tamVetor);
 
-        {
-            char *i = (char*) malloc(sizeof(char));
-        }
+        strcpy(ret->cabecalho, arvVetor);
 
         return ret;
     }
