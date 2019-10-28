@@ -31,18 +31,15 @@ void printarCabecalho(FILE *arq, CodCab *vets, char qtd) //É necessário controla
     NoFilAr *filaTudo = NULL;
     int qtdNos = 0;
     int posFimArv = 0;
-    char *c = (char*) malloc(sizeof(char));
+    char c = qtd;
 
-    *c = qtd;
+    fwrite(&c, sizeof(char), 2, arq); //bits lixo e altura
 
-    fwrite(c, sizeof(char), 1, arq); //bits lixo e altura
-    fwrite(c, sizeof(char), 1, arq); //CASO PRINTE 0, VOLTAR NESSA LINHA
-
-    while(strlen(vets->cabecalho) >= 0)
+    while(strlen(vets->cabecalho) > 0)
     {
-        *c = paraByte(vets->cabecalho);
+        c = paraByte(vets->cabecalho);
 
-        fwrite(c, sizeof(char), 1, arq);
+        fwrite(&c, sizeof(char), 1, arq);
 
         removerByte(&vets->cabecalho);
     }
@@ -52,13 +49,11 @@ void printarCabecalho(FILE *arq, CodCab *vets, char qtd) //É necessário controla
 
         for(i = 0; i < qtd; i++)
         {
-            *c = vets->cods[i].byte;
+            c = vets->cods[i].byte;
 
-            fwrite(c, sizeof(char), 1, arq);
+            fwrite(&c, sizeof(char), 1, arq);
         }
     }
-
-    free(c);
 }
 
 void escreverCompactador(char *path, CodCab *vets, int altura, int qtd)

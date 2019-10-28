@@ -24,7 +24,6 @@ void compactar() {
     escreverCompactador(path, codCab, strlen(codCab->cods[qtd - 1].cod), qtd);
 }
 void descompactar() {
-    //
 }
 
 char *get_path() {
@@ -34,10 +33,11 @@ char *get_path() {
     return ret;
 }
 int main(int qtdArgs, char *args[]) {
-    path = (char*)malloc(128 * sizeof(char));
+    path = (char*)malloc(256 * sizeof(char));
 
     if (qtdArgs > 1) {
-        *path = *args[1];
+        path = args[1];
+        printf("%s", path);
     } else {
         path = get_path();
     }

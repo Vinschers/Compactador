@@ -20,6 +20,11 @@ char paraByte(char *strByte)
 
 void removerByte(char **str)
 {
+    if (strlen(*str) < 8)
+    {
+        *str = "";
+        return;
+    }
     char *ret = (char*) malloc((strlen(*str) - 8) * sizeof(char));
     int i = 0;
 
