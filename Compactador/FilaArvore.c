@@ -8,6 +8,7 @@ NoFilAr* novaFilAr(No* dado)
     ret->cod = "";
     ret->dado = dado;
     ret->prox = NULL;
+    ret->indice = 0;
 
     return ret;
 }

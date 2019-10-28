@@ -4,13 +4,14 @@ char paraByte(char *strByte)
 {
     char ret = 0;
     char adiUm = 1;
+    int tam = strlen(strByte);
     int i;
 
     for(i = 0; i < 8; i++)
     {
         ret = ret << 1;
 
-        if(strByte[i] == '1')
+        if(i < tam && strByte[i] == '1')
             ret = ret | adiUm;
     }
 

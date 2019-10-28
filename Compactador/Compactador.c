@@ -12,7 +12,7 @@ char *path;
 void compactar() {
     NoFila *fila;
     No *arvore;
-    CodCab codCab;
+    CodCab *codCab;
     int qtd;
 
     qtd = montarFila(path, &fila);
@@ -21,7 +21,7 @@ void compactar() {
     arvore = montarArvore(fila, qtd);
     codCab = arvoreParaVetor(arvore, qtd);
 
-    //escreverCompactador(path, cods, 0, qtd);
+    escreverCompactador(path, codCab, strlen(codCab->cods[qtd - 1].cod), qtd);
 }
 void descompactar() {
     //

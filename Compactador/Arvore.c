@@ -73,11 +73,13 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
     strcpy(novo, *atual);
 
     if (f->dado->dir != NULL) {
-        strcat(novo, "1");
         NoFilAr *n = novaFilAr(NULL);
-        n->dado = f->dado->dir;
 
+        strcat(novo, "1");
+
+        n->dado = f->dado->dir;
         n->cod = (char*) malloc((strlen(*atual) + 1) * sizeof(char));
+        n->indice = f->indice * 2 + 2;
         strcpy(n->cod, novo);
 
         enfileirar(filaTudo, n);
@@ -86,11 +88,13 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
     strcpy(novo, *atual);
 
     if (f->dado->esq != NULL) {
-        strcat(novo, "0");
         NoFilAr *n = novaFilAr(NULL);
-        n->dado = f->dado->esq;
 
+        strcat(novo, "0");
+
+        n->dado = f->dado->esq;
         n->cod = (char*) malloc((strlen(*atual) + 1) * sizeof(char));
+        n->indice = f->indice * 2 + 1;
         strcpy(n->cod, novo);
 
         enfileirar(filaTudo, n);
@@ -103,22 +107,28 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
     }
 }
 
-CodCab arvoreParaVetor(No *no, int qtd)
+CodCab* arvoreParaVetor(No *no, int qtd)
 {
     CodByte *cods = (CodByte*)malloc(qtd * sizeof(CodByte));
-    int i;
     NoFilAr *filaTudo = NULL;
     NoFilAr *filaValida = NULL;
+    int i;
+    int tamVetor = (int)pow(2, (ceil(log2(qtd)) + 1));
     char *atual = "\0";
-    char arvVetor[(int)pow(2, (ceil(log2(qtd)) + 1) - 1)];
+    char arvVetor[tamVetor];
+
+    for(i = 0; i < tamVetor; i++)
+        arvVetor[i] = '0';
+
+    arvVetor[tamVetor - 1] = '\0';
 
     enfileirar(&filaTudo, novaFilAr(no));
 
-    for(i = 0; filaTudo; i++)
+    while(filaTudo)
     {
         NoFilAr *fim = ultimo(filaTudo);
 
-        arvVetor[i] = fim->dado->valido ? '1' : '0';
+        arvVetor[fim->indice] = fim->dado->valido ? '1' : '0';
 
         adicionaNaFila(&filaTudo, &filaValida, fim, &atual);
     }
@@ -127,18 +137,20 @@ CodCab arvoreParaVetor(No *no, int qtd)
 
     NoFilAr *per = filaValida;
 
-    i = 0;
-    while(per != NULL) {
-        cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
-        per = per->prox;
-        i++;
-    }
+        for(i = 0; per != NULL; i++) {
+            cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
+            per = per->prox;
+        }
 
     {
-        CodCab ret;
+        CodCab* ret = (CodCab*) malloc(sizeof(CodCab));
 
-        ret.cods = cods;
-        ret.cabecalho = arvVetor;
+        ret->cods = cods;
+        ret->cabecalho = arvVetor;
+
+        {
+            char *i = (char*) malloc(sizeof(char));
+        }
 
         return ret;
     }

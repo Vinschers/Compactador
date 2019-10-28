@@ -26,33 +26,59 @@ void printarNoArv(FILE *arq, No* n)
     fwrite(&(n->valido), sizeof(boolean), 1, arq);
 }
 
-void printarCabecalho(FILE *arq, CodByte *cod, char h, char qtd) //É necessário controlar qtd (-1 e +1)
+void printarCabecalho(FILE *arq, CodCab *vets, char qtd) //É necessário controlar qtd (-1 e +1)
 {
     NoFilAr *filaTudo = NULL;
     int qtdNos = 0;
     int posFimArv = 0;
+    char *c = (char*) malloc(sizeof(char));
 
-    fwrite(' ', sizeof(char), 1, arq); //bits lixo e altura
-    fwrite(qtd, sizeof(char), 1, arq); //CASO PRINTE 0, VOLTAR NESSA LINHA
+    *c = qtd;
+
+    fwrite(c, sizeof(char), 1, arq); //bits lixo e altura
+    fwrite(c, sizeof(char), 1, arq); //CASO PRINTE 0, VOLTAR NESSA LINHA
+
+    while(strlen(vets->cabecalho) >= 0)
+    {
+        *c = paraByte(vets->cabecalho);
+
+        fwrite(c, sizeof(char), 1, arq);
+
+        removerByte(&vets->cabecalho);
+    }
+
+    {
+        int i;
+
+        for(i = 0; i < qtd; i++)
+        {
+            *c = vets->cods[i].byte;
+
+            fwrite(c, sizeof(char), 1, arq);
+        }
+    }
+
+    free(c);
 }
 
-void escreverCompactador(char *path, CodByte* vet, int altura, int qtd)
+void escreverCompactador(char *path, CodCab *vets, int altura, int qtd)
 {
     FILE *arqEntrada, *arqSaida;
-    char *flush = (char*) malloc(2 * strlen(vet[qtd - 1].cod) * sizeof(char));
-    char *atual = (char*)malloc(sizeof(char));
+    char *flush = (char*) malloc(sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
+    char *atual = (char*) malloc(sizeof(char));
 
     abrir(&arqEntrada, path, "rb");
-    abrir(&arqSaida, path, "wb");
+    abrir(&arqSaida, strcat(path, ".loli"), "wb");
 
     flush[0] = '\0';
 
-    printarCabecalho(arqSaida, vet, altura, qtd);
+    printarCabecalho(arqSaida, vets, qtd);
     fseek(arqEntrada, 0, SEEK_SET);
 
     while(!acabou(arqEntrada)) {
         char c = lerChar(arqEntrada);
-        char *cod = getCod(vet, c, qtd);
+        char *cod = getCod(vets->cods, c, qtd);
+
         strcat(flush, cod);
 
         if (strlen(flush) >= 8) {
@@ -60,7 +86,6 @@ void escreverCompactador(char *path, CodByte* vet, int altura, int qtd)
 
             fwrite(atual, sizeof(char), 1, arqSaida);
             removerByte(&flush);
-            //free(atual);
         }
     }
 
