@@ -190,11 +190,31 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
     }
 }
 
-No* construirArvore(char *path)
+void montarArvoreBalanc(No **atual, int hAtual, int h, char *arvStr, char *bytes, int i)
+{
+    if(*atual == NULL)
+        *atual = novoNo();
+
+    if (arvStr[i] == '1')
+    {
+        *atual->byte = bytes[0];
+        strcpy(bytes, bytes[1]);
+    }
+
+    if(hAtual < h)
+    {
+        montarArvoreBalanc(&(*atual)-> esq, hAtual + 1, h, arvStr, bytes, 2 * i + 1);
+        montarArvoreBalanc(&(*atual)-> dir, hAtual + 1, h, arvStr, bytes, 2 * i + 2);
+    }
+}
+
+No* arqParaArvore(char *path)
 {
     FILE *arqEntrada = NULL;
-    char lixo, altura, lixAl;
+    char lixo, altura, lixAl, lixoArvStri;
+    char *arvStr, *bytes;
     short int qtdNos = 0, qtdNosValidos = 0;
+    No *arv = NULL;
 
     abrir(&arqEntrada, path, "rb");
 
@@ -203,8 +223,24 @@ No* construirArvore(char *path)
     lixo = lixAl >> 5;
     altura = (lixAl << 3) >> 5;
 
-    qtdNos = 8 - ((int)(pow(2, altura + 1) - 1) % 8);
+    qtdNos = (int)(pow(2, altura + 1) - 1);
+    lixoArvStri = 8 - (qtdNos % 8);
     qtdNosValidos = (short int) lerChar(arqEntrada) + 1;
+
+    {
+        arvStr = (char*)malloc((qtdNos - lixoArvStri + 1) * sizeof(char));
+        char string[(int)ceil(qtdNos/8)]; /* possui lixo */
+
+        fread(string, sizeof(char), sizeof(arvStr), arqEntrada);
+
+        strncpy(arvStr, charsParaString(string), qtdNos - lixoArvStri);
+    }
+
+    bytes = (char*) malloc(qtdNosValidos * sizeof(char));
+
+    fread(bytes, sizeof(char), qtdNosValidos, arqEntrada);
+
+    montarArvoreBalanc(&arv, 0, (int) altura, arvStr, bytes);
 }
 
 void destruirArv(No *no)

@@ -37,9 +37,22 @@ void removerByte(char **str)
 
 char* charsParaString(char vet[])
 {
-    char *ret = (char*) malloc(sizeof(char) * sizeof(vet) * 8);
+    int i, move = 128;
+    char *ret = (char*) malloc(sizeof(char) * (sizeof(vet) * 8 + 1));
 
+    for(i = 0; i < sizeof(vet); i++)
+    {
+        int b;
 
+        for(b = 0; b < 8; b++)
+        {
+            if((move >> b) & vet[i])
+                ret[(i * 8) + b] = '1';
+            else
+                ret[(i * 8) + b] = '0';
+        }
+    }
+    ret[i * 8] = '\0';
 
     return ret;
 }

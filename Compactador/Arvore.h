@@ -20,5 +20,5 @@ typedef struct
 extern No* montarArvore(Barra *b, NoFila *fila, int qtdFila);
 extern CodByte* novaCodByte(char* cod, char byte);
 extern CodCab* arvoreParaVetor(Barra *b, No *no, int qtd);
-extern No* construirArvore(char *path);
+extern No* arqParaArvore(char *path);
 #endif

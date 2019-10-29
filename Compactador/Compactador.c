@@ -43,7 +43,7 @@ void compactar() {
 void descompactar()
 {
     atexit(sairDescompactar);
-    arvore = construirArvore(path);
+    arvore = arqParaArvore(path);
     escreverDescompactador(arvore, path);
 }
 
