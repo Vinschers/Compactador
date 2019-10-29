@@ -115,13 +115,32 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
     }
 }
 
+int getAltura(No *no)
+{
+    int ret = 0;
+
+    if(no == NULL)
+        return ret;
+
+    {
+        int alEsq = getAltura(no->esq), alDir = getAltura(no->dir);
+
+        if(alEsq > alDir)
+            ret = alEsq + 1;
+        else
+            ret = alDir + 1;
+    }
+
+    return ret;
+}
+
 CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
 {
     CodByte *cods = (CodByte*)malloc(qtd * sizeof(CodByte));
     NoFilAr *filaTudo = NULL;
     NoFilAr *filaValida = NULL;
     int i;
-    int tamVetor = (int)pow(2, (ceil(log2(qtd)) + 1));
+    int tamVetor = (int)pow(2, getAltura(no));
     char *atual = "\0";
     char arvVetor[tamVetor];
 
@@ -151,10 +170,13 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
 
     NoFilAr *per = filaValida;
 
-        for(i = 0; per != NULL; i++) {
-            cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
-            per = per->prox;
-        }
+    for(i = 0; per != NULL; i++) {
+        cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
+        per = per->prox;
+    }
+
+    destruirFilAr(filaTudo);
+    destruirFilAr(filaValida);
 
     {
         CodCab* ret = (CodCab*) malloc(sizeof(CodCab));
@@ -166,6 +188,53 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
 
         return ret;
     }
+}
 
-    //return ret;
+No* construirArvore(char *path)
+{
+    FILE *arqEntrada = NULL;
+    char lixo, altura, lixAl;
+    short int qtdNos = 0, qtdNosValidos = 0;
+
+    abrir(&arqEntrada, path, "rb");
+
+    lixAl = lerChar(arqEntrada);
+
+    lixo = lixAl >> 5;
+    altura = (lixAl << 3) >> 5;
+
+    qtdNos = 8 - ((int)(pow(2, altura + 1) - 1) % 8);
+    qtdNosValidos = (short int) lerChar(arqEntrada) + 1;
+}
+
+void destruirArv(No *no)
+{
+    if(no == NULL)
+        return;
+
+    if(no->dir != NULL)
+        destruirArv(no->dir);
+
+    if(no->esq != NULL)
+        destruirArv(no->esq);
+
+    free(no);
+}
+
+void destruirCodCab(CodCab *cc, int qtd)
+{
+    if(cc == NULL || qtd <= 0)
+        return;
+
+    free(cc->cabecalho);
+
+    {
+        int i;
+
+        for(i = 0; i < qtd; i++)
+            free(cc->cods[i].cod);
+    }
+
+    free(cc->cods);
+    free(cc);
 }

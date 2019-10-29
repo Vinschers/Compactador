@@ -11,22 +11,40 @@
 char *path;
 Barra barra;
 
+/* Compactar */
+NoFila *fila = NULL;
+No *arvore = NULL;
+CodCab *codCab = NULL;
+int qtd = 0;
+
+void sairCompactar()
+{
+    destruirCodCab(codCab, qtd);
+    destruirFilPri(fila);
+    destruirArv(arvore);
+}
+
+void sairDescompactar()
+{
+    destruirArv(arvore);
+}
+
 void compactar() {
-    NoFila *fila;
-    No *arvore;
-    CodCab *codCab;
-    int qtd;
+    atexit(sairCompactar);
 
     qtd = montarFila(&barra, path, &fila);
-    //printarFila(fila);
 
     arvore = montarArvore(&barra, fila, qtd);
     codCab = arvoreParaVetor(&barra, arvore, qtd);
 
     escreverCompactador(&barra, path, codCab, strlen(codCab->cods[qtd - 1].cod), qtd);
-    free(codCab);
 }
-void descompactar() {
+
+void descompactar()
+{
+    atexit(sairDescompactar);
+    arvore = construirArvore(path);
+    escreverDescompactador(arvore, path);
 }
 
 char *get_path() {
@@ -50,16 +68,18 @@ int main(int qtdArgs, char *args[]) {
     }
     if (strstr(path, ".loli")) //extensao passivel de mudanca
     {
-        printf("Descompactando \"%s\"...\n\n", path);
+        printf("Descompactando \"%s\"...", path);
         barra.y = ++y;
         descompactar();
     }
     else
     {
-        printf("Compactando \"%s\"...\n\n", path);
+        printf("Compactando \"%s\"...", path);
         barra.y = ++y;
         compactar();
     }
+
+    printf("\n");
 
     free(path);
 

@@ -73,3 +73,19 @@ void inverterFila(NoFilAr** fila)
     *fila = antecessor;
 }
 
+void destruirFilAr(NoFilAr *no)
+{
+    NoFilAr *ant = NULL, *atual = no;
+
+    while(atual != NULL)
+    {
+        if(ant != NULL)
+            free(ant);
+
+        ant = atual;
+        atual = atual->prox;
+    }
+
+    if(ant != NULL)
+        free(ant);
+}

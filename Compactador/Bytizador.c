@@ -34,3 +34,12 @@ void removerByte(char **str)
     //free(*str);
     *str = ret;
 }
+
+char* charsParaString(char vet[])
+{
+    char *ret = (char*) malloc(sizeof(char) * sizeof(vet) * 8);
+
+
+
+    return ret;
+}

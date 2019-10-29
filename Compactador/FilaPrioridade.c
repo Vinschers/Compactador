@@ -120,3 +120,20 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
 
     return qtdFila;
 }
+
+void destruirFilPri(NoFila *no)
+{
+    NoFila *ant = NULL, *atual = no;
+
+    while(atual != NULL)
+    {
+        if(ant != NULL)
+            free(ant);
+
+        ant = atual;
+        atual = atual->prox;
+    }
+
+    if(ant != NULL)
+        free(ant);
+}
