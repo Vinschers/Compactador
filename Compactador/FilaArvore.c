@@ -9,6 +9,7 @@ NoFilAr* novaFilAr(No* dado)
     ret->dado = dado;
     ret->prox = NULL;
     ret->indice = 0;
+    ret->h = 1;
 
     return ret;
 }

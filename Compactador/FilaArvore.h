@@ -9,6 +9,7 @@ typedef struct NoFilAr
     No* dado;
     char* cod;
     short int indice;
+    char h;
 } NoFilAr;
 
 extern NoFilAr* novaFilAr(No* dado);

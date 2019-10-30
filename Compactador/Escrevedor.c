@@ -8,9 +8,6 @@
 #include "Arvore.h"
 #include "FilaArvore.h"
 
-#define juntarLixoAltura(l, a) a&(l<<4)
-
-
 char* getCod(CodByte *vet, char c, int qtd)
 {
     int i;
@@ -23,10 +20,12 @@ char* getCod(CodByte *vet, char c, int qtd)
 
 void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, char qtd, int *coutB) //É necessário controlar qtd (-1 e +1)
 {
-    char c = qtd;
+    char c = ' ';
     int i = 1;
 
-    fwrite(&c, sizeof(char), 2, arq); //bits lixo e altura
+    fwrite(&c, sizeof(char), 1, arq);
+    c = qtd - 1;
+    fwrite(&c, sizeof(char), 1, arq); //bits lixo, altura e qtd
     *coutB += 2;
     setPorcentagem(b, *coutB);
 
@@ -94,9 +93,13 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     {
         char qtdBitsLixo = 8 - strlen(flush);
         char *c = (char*)malloc(sizeof(char));
-        *c = juntarLixoAltura(qtdBitsLixo, altura);
-        fseek(arqEntrada, 0, SEEK_SET);
+        *c = (altura - 1) | (qtdBitsLixo << 4);
+
+        fseek(arqSaida, 0, SEEK_SET);
+
         fwrite(c, sizeof(char), 1, arqSaida);
+
+        free(c);
     }
 
     free(atual);
@@ -106,7 +109,43 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     fclose(arqSaida);
 }
 
-void escreverDescompactador(No *no, char *path)
+void escreverDescompactador(No *no, char *path, int iniCompact)
 {
+    FILE *arqEntrada = fopen(path, "rb");
+    FILE *arqSaida;
 
+    //strncpy(path, path, strlen(path) - 5);
+    path[strlen(path) - 5] = '\0';
+
+    arqSaida = fopen(path, "wb");
+
+    fseek(arqEntrada, iniCompact, SEEK_SET);
+
+    {
+        No *atual = no;
+        char lido, bitEsquerda = 128;
+        int i;
+
+        while(!acabou(arqEntrada))
+        {
+            lido = lerChar(arqEntrada);
+
+            for(i = 0; i < 8; i++)
+            {
+                if((bitEsquerda >> i) & lido)
+                    atual = atual -> dir;
+                else
+                    atual = atual -> esq;
+
+                if(atual->valido)
+                {
+                    fwrite(&atual->byte, sizeof(char), 1, arqSaida);
+                    atual = no;
+                }
+            }
+        }
+
+        fclose(arqEntrada);
+        fclose(arqSaida);
+    }
 }

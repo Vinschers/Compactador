@@ -17,6 +17,9 @@ No *arvore = NULL;
 CodCab *codCab = NULL;
 int qtd = 0;
 
+/* Descompactar */
+int *iniCompact;
+
 void sairCompactar()
 {
     destruirCodCab(codCab, qtd);
@@ -26,6 +29,7 @@ void sairCompactar()
 
 void sairDescompactar()
 {
+    free(iniCompact);
     destruirArv(arvore);
 }
 
@@ -37,14 +41,16 @@ void compactar() {
     arvore = montarArvore(&barra, fila, qtd);
     codCab = arvoreParaVetor(&barra, arvore, qtd);
 
-    escreverCompactador(&barra, path, codCab, strlen(codCab->cods[qtd - 1].cod), qtd);
+    escreverCompactador(&barra, path, codCab, getAltura(arvore), qtd);
 }
 
 void descompactar()
 {
+    iniCompact = (int*)malloc(sizeof(int));
+
     atexit(sairDescompactar);
-    arvore = arqParaArvore(path);
-    escreverDescompactador(arvore, path);
+    arvore = arqParaArvore(path, iniCompact);
+    escreverDescompactador(arvore, path, *iniCompact);
 }
 
 char *get_path() {

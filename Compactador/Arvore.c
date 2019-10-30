@@ -45,35 +45,6 @@ No* montarArvore(Barra *b, NoFila *fila, int qtdFila) {
     return pop(&fila);
 }
 
-/*
-No* montarArvore(NoFila *fila, int qtdFila) {
-    No arv[(int)pow(2, (ceil(log2(qtdFila)) + 1) - 1)];
-    int i;
-
-    for(i = 0; qtdFila >= 2; i++) {
-        No *primeiro = pop(&fila);
-        No *segundo = pop(&fila);
-        No *novo = (No*)malloc(sizeof(No));
-
-        novo->vezes = primeiro->vezes + segundo->vezes;
-        novo->byte = '\0';
-        novo->valido = False;
-
-        arv[i] = *novo;
-        arv[2 * i + 1] = *primeiro;
-        arv[2 * i + 2] = *segundo;
-
-        free(novo);
-        free(primeiro);
-        free(segundo);
-
-        qtdFila--;
-    }
-
-    return arv;
-}
-*/
-
 void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char **atual)
 {
     *atual = f->cod;
@@ -190,29 +161,48 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
     }
 }
 
-void montarArvoreBalanc(No **atual, int hAtual, int h, char *arvStr, char *bytes, int i)
+No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
 {
-    if(*atual == NULL)
-        *atual = novoNo();
+    No *raiz = novoNo();
+    NoFilAr *fila = novaFilAr(raiz);
 
-    if (arvStr[i] == '1')
+    while(fila)
     {
-        *atual->byte = bytes[0];
-        strcpy(bytes, bytes[1]);
+        NoFilAr *fim = ultimo(fila);
+
+        if(arvStr[fim->indice] == '1')
+        {
+            fim->dado->byte = bytes[0];
+            fila->dado->valido = True;
+
+            strcpy(bytes, &bytes[1]);
+        }
+
+        if(fim->h < h)
+        {
+            No *esq = novoNo();
+            No *dir = novoNo();
+
+            fim->dado->esq = esq;
+            fim->dado->dir = dir;
+
+            enfileirar(&fila, esq);
+            enfileirar(&fila, dir);
+        }
+
+        desenfileirar(&fila);
     }
 
-    if(hAtual < h)
-    {
-        montarArvoreBalanc(&(*atual)-> esq, hAtual + 1, h, arvStr, bytes, 2 * i + 1);
-        montarArvoreBalanc(&(*atual)-> dir, hAtual + 1, h, arvStr, bytes, 2 * i + 2);
-    }
+    destruirFilAr(fila);
+
+    return raiz;
 }
 
-No* arqParaArvore(char *path)
+No* arqParaArvore(char *path, int *iniCompact)
 {
     FILE *arqEntrada = NULL;
-    char lixo, altura, lixAl, lixoArvStri;
-    char *arvStr, *bytes;
+    char lixo, altura, lixAl;
+    char *arvStr;
     short int qtdNos = 0, qtdNosValidos = 0;
     No *arv = NULL;
 
@@ -220,27 +210,42 @@ No* arqParaArvore(char *path)
 
     lixAl = lerChar(arqEntrada);
 
-    lixo = lixAl >> 5;
-    altura = (lixAl << 3) >> 5;
+    lixo = lixAl >> 4;
 
-    qtdNos = (int)(pow(2, altura + 1) - 1);
-    lixoArvStri = 8 - (qtdNos % 8);
+    lixAl = lixAl << 4;
+    lixAl = lixAl >> 4;
+    altura = lixAl + 1;
+
+    qtdNos = (int)(pow(2, altura) - 1);
     qtdNosValidos = (short int) lerChar(arqEntrada) + 1;
 
     {
-        arvStr = (char*)malloc((qtdNos - lixoArvStri + 1) * sizeof(char));
+        arvStr = (char*)malloc((qtdNos + 1) * sizeof(char));
         char string[(int)ceil(qtdNos/8)]; /* possui lixo */
+
+        arvStr[qtdNos] = '\0';
 
         fread(string, sizeof(char), sizeof(arvStr), arqEntrada);
 
-        strncpy(arvStr, charsParaString(string), qtdNos - lixoArvStri);
+        strncpy(arvStr, charsParaString(string), qtdNos);
     }
 
-    bytes = (char*) malloc(qtdNosValidos * sizeof(char));
+    {
+        char bytes[qtdNosValidos + 1];
 
-    fread(bytes, sizeof(char), qtdNosValidos, arqEntrada);
+        fread(bytes, sizeof(char), qtdNosValidos, arqEntrada);
 
-    montarArvoreBalanc(&arv, 0, (int) altura, arvStr, bytes);
+        bytes[qtdNosValidos] = '\0';
+
+        printf("\n");
+        arv = montarArvoreBalanc((int) altura, arvStr, bytes);
+    }
+
+    *iniCompact = ftell(arqEntrada);
+
+    fclose(arqEntrada);
+
+    return arv;
 }
 
 void destruirArv(No *no)

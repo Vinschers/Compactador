@@ -11,6 +11,9 @@ No* novoNo()
     ret->esq = NULL;
     ret->vezes = 0;
     ret->byte = '\0';
+    ret->valido = False;
+
+    return ret;
 }
 
 void avancarSimboloBarra(Barra *b)
