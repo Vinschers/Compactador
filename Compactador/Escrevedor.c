@@ -58,6 +58,9 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     char *atual = (char*) malloc(sizeof(char));
     int *coutB = (int*)malloc(sizeof(int));
 
+    for(int i = 0; i < qtd; i++)
+        printf("\n%c: %s", vets->cods[i].byte, vets->cods[i].cod);
+
     abrir(&arqEntrada, path, "rb");
     abrir(&arqSaida, strcat(path, ".loli"), "wb");
     avancarParte(b);
@@ -109,7 +112,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     fclose(arqSaida);
 }
 
-void escreverDescompactador(No *no, char *path, int iniCompact)
+void escreverDescompactador(No *no, char *path, int iniCompact, char qtdLixo)
 {
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
@@ -123,14 +126,14 @@ void escreverDescompactador(No *no, char *path, int iniCompact)
 
     {
         No *atual = no;
-        char lido, bitEsquerda = 128;
+        unsigned char lido, bitEsquerda = 128;
         int i;
 
         while(!acabou(arqEntrada))
         {
             lido = lerChar(arqEntrada);
 
-            for(i = 0; i < 8; i++)
+            for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
             {
                 if((bitEsquerda >> i) & lido)
                     atual = atual -> dir;

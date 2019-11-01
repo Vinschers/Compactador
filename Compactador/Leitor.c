@@ -18,8 +18,9 @@ unsigned char lerChar(FILE *arq) {
 }
 
 char* lerVariosChars(FILE *arq, int qtdChars) {
-    char *vet = (char*)malloc(qtdChars*sizeof(char));
+    char *vet = (char*) malloc(sizeof(char) * (qtdChars + 1));
     fread(vet, sizeof(char), qtdChars, arq);
+    vet[qtdChars] = '\0';
     return vet;
 }
 

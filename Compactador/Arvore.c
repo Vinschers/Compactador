@@ -161,6 +161,18 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
     }
 }
 
+void printarArv(No *a)
+{
+    if (a == NULL)
+        return;
+
+    printarArv(a->esq);
+
+    printf("%c - %i\n", a->byte, a->valido);
+
+    printarArv(a->dir);
+}
+
 No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
 {
     No *raiz = novoNo();
@@ -173,21 +185,26 @@ No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
         if(arvStr[fim->indice] == '1')
         {
             fim->dado->byte = bytes[0];
-            fila->dado->valido = True;
+            fim->dado->valido = True;
 
             strcpy(bytes, &bytes[1]);
         }
 
         if(fim->h < h)
         {
-            No *esq = novoNo();
-            No *dir = novoNo();
+            NoFilAr *esq = novaFilAr(novoNo());
+            NoFilAr *dir = novaFilAr(novoNo());
 
-            fim->dado->esq = esq;
-            fim->dado->dir = dir;
+            fim->dado->esq = esq->dado;
+            fim->dado->dir = dir->dado;
 
-            enfileirar(&fila, esq);
+            esq->h = fim->h + 1;
+            dir->h = fim->h + 1;
+            esq->indice = fim->indice * 2 + 1;
+            dir->indice = fim->indice * 2 + 2;
+
             enfileirar(&fila, dir);
+            enfileirar(&fila, esq);
         }
 
         desenfileirar(&fila);
@@ -198,10 +215,10 @@ No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
     return raiz;
 }
 
-No* arqParaArvore(char *path, int *iniCompact)
+No* arqParaArvore(char *path, int *iniCompact, char *lixo)
 {
     FILE *arqEntrada = NULL;
-    char lixo, altura, lixAl;
+    char altura, lixAl;
     char *arvStr;
     short int qtdNos = 0, qtdNosValidos = 0;
     No *arv = NULL;
@@ -210,7 +227,7 @@ No* arqParaArvore(char *path, int *iniCompact)
 
     lixAl = lerChar(arqEntrada);
 
-    lixo = lixAl >> 4;
+    *lixo = lixAl >> 4;
 
     lixAl = lixAl << 4;
     lixAl = lixAl >> 4;

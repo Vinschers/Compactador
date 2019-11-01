@@ -19,6 +19,7 @@ int qtd = 0;
 
 /* Descompactar */
 int *iniCompact;
+char *qtdLixo;
 
 void sairCompactar()
 {
@@ -30,6 +31,7 @@ void sairCompactar()
 void sairDescompactar()
 {
     free(iniCompact);
+    free(qtdLixo);
     destruirArv(arvore);
 }
 
@@ -46,11 +48,13 @@ void compactar() {
 
 void descompactar()
 {
-    iniCompact = (int*)malloc(sizeof(int));
+    iniCompact = (int*) malloc(sizeof(int));
+    qtdLixo = (char*) malloc(sizeof(char));
 
     atexit(sairDescompactar);
-    arvore = arqParaArvore(path, iniCompact);
-    escreverDescompactador(arvore, path, *iniCompact);
+
+    arvore = arqParaArvore(path, iniCompact, qtdLixo);
+    escreverDescompactador(arvore, path, *iniCompact, *qtdLixo);
 }
 
 char *get_path() {

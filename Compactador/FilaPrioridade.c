@@ -5,6 +5,8 @@
 #include "FilaPrioridade.h"
 #include "Leitor.h"
 
+#define qtdIdeal 1024
+
 NoFila* inserir(NoFila *raiz, No *novo) {
     NoFila *atual = raiz;
     NoFila *nf = (NoFila*)malloc(sizeof(NoFila));
@@ -86,15 +88,19 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
     i = 0;
 
     while(!acabou(arq)) {
-       /*char *vet = lerVariosChars(arq, 1);
-        for(i = 0; i < qtdChars; i++) {
-            //freq[(unsigned char)vet[i]]++;
-            printf("%c", (unsigned char)vet[i]);
+        char *vet = (char*) malloc(sizeof(char) * (qtdIdeal + 1));
+
+        fgets(vet, qtdIdeal, arq);
+
+        for(i = 0; i < qtdIdeal; i++) {
+            freq[(unsigned char)vet[i]]++;
+            //setPorcentagem(b, ++i);
+            //printf("%c", (unsigned char)vet[i]);
         }
-        free(vet);*/
-        char at = lerChar(arq);
-        freq[(unsigned char)at]++;
-        setPorcentagem(b, ++i);
+        free(vet);
+        /*char at = lerChar(arq);
+        freq[(unsigned char)at]++;*/
+        //setPorcentagem(b, ++i);
     }
     avancarParte(b);
     setMaxPorcentagem(b, 255);
