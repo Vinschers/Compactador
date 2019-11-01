@@ -1,4 +1,5 @@
 #ifndef Uteis
+#define qtdIdeal 1024
 #define Uteis
 typedef enum {
     False, True
@@ -8,7 +9,7 @@ typedef struct No
 {
     struct No *esq, *dir;
     unsigned long long int vezes;
-    char byte;
+    unsigned char byte;
     boolean valido;
 } No;
 

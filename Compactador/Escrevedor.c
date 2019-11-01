@@ -54,18 +54,17 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, char qtd, int *coutB) /
 void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd)
 {
     FILE *arqEntrada, *arqSaida;
-    char *flush = (char*) malloc(sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
-    char *atual = (char*) malloc(sizeof(char));
+    unsigned char *flush = (unsigned char*) malloc(sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
+    unsigned char *atual = (unsigned char*) malloc(sizeof(char));
     int *coutB = (int*)malloc(sizeof(int));
 
-    for(int i = 0; i < qtd; i++)
-        printf("\n%c: %s", vets->cods[i].byte, vets->cods[i].cod);
+    float bytesStrLouca = (float)strlen(vets->cabecalho)/8;
+    int bsl = (int)ceil(bytesStrLouca);
 
     abrir(&arqEntrada, path, "rb");
     abrir(&arqSaida, strcat(path, ".loli"), "wb");
     avancarParte(b);
-    float bytesStrLouca = (float)strlen(vets->cabecalho)/8;
-    int bsl = (int)ceil(bytesStrLouca);
+
     setMaxPorcentagem(b, 2 + bsl + qtd + qtdBytesArq(arqEntrada));
     *coutB = 0;
 
@@ -74,20 +73,34 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     printarCabecalho(b, arqSaida, vets, qtd, coutB);
     fseek(arqEntrada, 0, SEEK_SET);
 
-    while(!acabou(arqEntrada)) {
-        char c = lerChar(arqEntrada);
-        char *cod = getCod(vets->cods, c, qtd);
+    {
+        int i;
+        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (qtdIdeal + 1)), *cod;
+        unsigned char c;
 
-        strcat(flush, cod);
+        while(!acabou(arqEntrada)) {
+            fgets(lido, qtdIdeal, arqEntrada);
 
-        if (strlen(flush) >= 8) {
-            *atual = paraByte(flush);
+            for(i = 0; i <= strlen(lido); i++)
+            {
+                c = lido[i];
 
-            fwrite(atual, sizeof(char), 1, arqSaida);
-            removerByte(&flush);
+                cod = getCod(vets->cods, c, qtd);
+
+                strcat(flush, cod);
+
+                if (strlen(flush) >= 8) {
+                    *atual = paraByte(flush);
+
+                    fwrite(atual, sizeof(char), 1, arqSaida);
+                    removerByte(&flush);
+                }
+            }
+            printf("aqui!");
+            ///setPorcentagem(b, (*coutB)++);
         }
-        setPorcentagem(b, (*coutB)++);
     }
+    printf("\n\n\n\n");
 
     *atual = paraByte(flush);
     fwrite(atual, sizeof(char), 1, arqSaida); //vai ignorar o lixo de memora pq nao importa mesmo
@@ -112,12 +125,30 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     fclose(arqSaida);
 }
 
+/*
+void escreverChar(unsigned char c, No **atual, No *raiz, FILE *arqEntrada, FILE *arqSaida, char qtdLixo) {
+    char bitEsquerda = 0b10000000;
+    int i;
+    for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
+    {
+        if((bitEsquerda >> i) & c)
+            *atual = (*atual) -> dir;
+        else
+            atual = (*atual) -> esq;
+
+        if((*atual)->valido)
+        {
+            fwrite(&(*atual)->byte, sizeof(char), 1, arqSaida);
+            *atual = raiz;
+        }
+    }
+}*/
+
 void escreverDescompactador(No *no, char *path, int iniCompact, char qtdLixo)
 {
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
 
-    //strncpy(path, path, strlen(path) - 5);
     path[strlen(path) - 5] = '\0';
 
     arqSaida = fopen(path, "wb");
@@ -126,24 +157,32 @@ void escreverDescompactador(No *no, char *path, int iniCompact, char qtdLixo)
 
     {
         No *atual = no;
-        unsigned char lido, bitEsquerda = 128;
-        int i;
+        unsigned char bitEsquerda = 0b10000000, charAtual;
+        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (qtdIdeal + 1));
+        int i, j;
 
         while(!acabou(arqEntrada))
         {
-            lido = lerChar(arqEntrada);
+            fgets(lido, qtdIdeal, arqEntrada);
 
-            for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
+            fflush(arqEntrada);
+
+            for(j = 0; j <= strlen(lido); j++)
             {
-                if((bitEsquerda >> i) & lido)
-                    atual = atual -> dir;
-                else
-                    atual = atual -> esq;
+                charAtual = lido[j];
 
-                if(atual->valido)
+                for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo && j == strlen(lido)) && i < 8; i++)
                 {
-                    fwrite(&atual->byte, sizeof(char), 1, arqSaida);
-                    atual = no;
+                    if((bitEsquerda >> i) & charAtual)
+                        atual = (atual) -> dir;
+                    else
+                        atual = (atual) -> esq;
+
+                    if((atual)->valido)
+                    {
+                        fwrite(&(atual)->byte, sizeof(char), 1, arqSaida);
+                        atual = no;
+                    }
                 }
             }
         }

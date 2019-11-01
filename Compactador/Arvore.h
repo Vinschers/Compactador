@@ -7,8 +7,8 @@
 
 typedef struct
 {
-    char* cod;
-    char byte;
+    unsigned char* cod;
+    unsigned char byte;
 } CodByte;
 
 typedef struct
