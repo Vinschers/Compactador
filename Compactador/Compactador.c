@@ -36,14 +36,16 @@ void sairDescompactar()
 }
 
 void compactar() {
-    atexit(sairCompactar);
+    //atexit(sairCompactar);
 
     qtd = montarFila(&barra, path, &fila);
 
     arvore = montarArvore(&barra, fila, qtd);
+
+    printf("\n");
     codCab = arvoreParaVetor(&barra, arvore, qtd);
 
-    escreverCompactador(&barra, path, codCab, getAltura(arvore), qtd);
+    //escreverCompactador(&barra, path, codCab, getAltura(arvore), qtd);
 }
 
 void descompactar()

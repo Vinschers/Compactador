@@ -83,7 +83,6 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
         desenfileirar(filaTudo);
     } else {
         enfileirar(filaValida, desenfileirar(filaTudo));
-        printf("%i\n", (*filaValida)->indice);
     }
 }
 
@@ -135,7 +134,7 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
 
         adicionaNaFila(&filaTudo, &filaValida, fim, &atual);
 
-        //setPorcentagem(b, i++);
+        setPorcentagem(b, i++);
     }
 
     inverterFila(&filaValida);
@@ -153,10 +152,10 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
     {
         CodCab* ret = (CodCab*) malloc(sizeof(CodCab));
 
-        ret->cods = cods;
-        ret->cabecalho = (char*)malloc(sizeof(char) * tamVetor);
+        //ret->cods = cods;
+        //ret->cabecalho = (char*)malloc(sizeof(char) * tamVetor);
 
-        strcpy(ret->cabecalho, arvVetor);
+        //strcpy(ret->cabecalho, arvVetor);
 
         return ret;
     }
@@ -169,7 +168,7 @@ void printarArv(No *a)
 
     printarArv(a->esq);
 
-    printf("%c - %i\n", a->byte, a->valido);
+    printf("%i - %i\n", a->byte, a->valido);
 
     printarArv(a->dir);
 }

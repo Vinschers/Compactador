@@ -53,7 +53,7 @@ void printarFila(NoFila *fila) {
     NoFila* per = fila;
     while(per != NULL)
     {
-        printf("char %c (%i): %llu\n", (signed char)per -> dado -> byte,(unsigned char)per -> dado -> byte, (unsigned long long int)per->dado->vezes);
+        printf("char %i: %llu\n", per -> dado -> byte, (unsigned long long int)per->dado->vezes);
         per = per -> prox;
     }
 }
@@ -81,23 +81,14 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
     fseek(arq, 0, SEEK_END);
     qtdChars = ftell(arq);
     fseek(arq, 0, SEEK_SET);
-    setMaxPorcentagem(b, qtdChars / qtdIdeal);
+    setMaxPorcentagem(b, qtdChars);
 
     i = 0;
 
     while(!acabou(arq)) {
-        /*char *vet = (char*) malloc(sizeof(char) * (qtdIdeal + 1));
-
-        fgets(vet, qtdIdeal, arq);
-
-        for(i = 0; i < strlen(vet); i++) {
-            freq[(unsigned char)vet[i]]++;
-        }
-        free(vet);
-        setPorcentagem(b, ++porcent);*/
-        char at = lerChar(arq);
+        unsigned char at = lerChar(arq);
         freq[(unsigned char)at]++;
-        //setPorcentagem(b, ++i);
+        setPorcentagem(b, ++i);
     }
     avancarParte(b);
     setMaxPorcentagem(b, 255);
