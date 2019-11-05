@@ -152,10 +152,10 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
     {
         CodCab* ret = (CodCab*) malloc(sizeof(CodCab));
 
-        //ret->cods = cods;
-        //ret->cabecalho = (char*)malloc(sizeof(char) * tamVetor);
+        ret->cods = cods;
+        ret->cabecalho = (char*)malloc(sizeof(char) * tamVetor);
 
-        //strcpy(ret->cabecalho, arvVetor);
+        strcpy(ret->cabecalho, arvVetor);
 
         return ret;
     }
@@ -286,12 +286,15 @@ void destruirCodCab(CodCab *cc, int qtd)
 
     free(cc->cabecalho);
 
-    {
+    /*{
         int i;
 
         for(i = 0; i < qtd; i++)
-            free(cc->cods[i].cod);
-    }
+        {
+            char *c = cc->cods[i].cod;
+            //free(c);
+        }
+    }*/
 
     free(cc->cods);
     free(cc);

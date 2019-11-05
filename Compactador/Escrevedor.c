@@ -8,7 +8,7 @@
 #include "Arvore.h"
 #include "FilaArvore.h"
 
-char* getCod(CodByte *vet, char c, int qtd)
+char* getCod(CodByte *vet, unsigned char c, int qtd)
 {
     int i;
     for (i = 0; i < qtd; ++i)
@@ -18,10 +18,9 @@ char* getCod(CodByte *vet, char c, int qtd)
     return "";
 }
 
-void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, char qtd, int *coutB) //É necessário controlar qtd (-1 e +1)
+void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //É necessário controlar qtd (-1 e +1)
 {
-    char c = ' ';
-    int i = 1;
+    unsigned char c = ' ';
 
     fwrite(&c, sizeof(char), 1, arq);
     c = qtd - 1;
@@ -40,7 +39,7 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, char qtd, int *coutB) /
     }
 
     {
-
+        int i;
         for(i = 0; i < qtd; i++)
         {
             c = vets->cods[i].byte;
@@ -54,7 +53,7 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, char qtd, int *coutB) /
 void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd)
 {
     FILE *arqEntrada, *arqSaida;
-    unsigned char *flush = (unsigned char*) malloc(sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
+    unsigned char *flush = (unsigned char*) malloc(10000 * sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
     unsigned char *atual = (unsigned char*) malloc(sizeof(char));
     int *coutB = (int*)malloc(sizeof(int));
 
@@ -74,33 +73,25 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     fseek(arqEntrada, 0, SEEK_SET);
 
     {
-        int i;
-        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (qtdIdeal + 1)), *cod;
+        int i = 0;
+        unsigned char lido, *cod;
         unsigned char c;
 
         while(!acabou(arqEntrada)) {
-            fgets(lido, qtdIdeal, arqEntrada);
+            c = lerChar(arqEntrada);
+            cod = getCod(vets->cods, c, qtd);
+            strcat(flush, cod);
 
-            for(i = 0; i <= strlen(lido); i++)
-            {
-                c = lido[i];
-
-                cod = getCod(vets->cods, c, qtd);
-
-                strcat(flush, cod);
-
-                if (strlen(flush) >= 8) {
-                    *atual = paraByte(flush);
-
-                    fwrite(atual, sizeof(char), 1, arqSaida);
-                    removerByte(&flush);
-                }
+            if (strlen(flush) >= 8) {
+                *atual = paraByte(flush);
+                fwrite(atual, sizeof(char), 1, arqSaida);
+                removerByte(&flush);
             }
-            printf("aqui!");
-            ///setPorcentagem(b, (*coutB)++);
+
+            //setPorcentagem(b, (*coutB)++);
         }
     }
-    printf("\n\n\n\n");
+
 
     *atual = paraByte(flush);
     fwrite(atual, sizeof(char), 1, arqSaida); //vai ignorar o lixo de memora pq nao importa mesmo

@@ -31,8 +31,8 @@ void removerByte(char **str)
     for(; (*str)[7 + i] != '\0'; i++)
         ret[i] = (*str)[8 + i];
 
-    //free(*str);
     *str = ret;
+    //strcpy(*str, &(*str[8]));
 }
 
 char* charsParaString(char vet[])
