@@ -86,17 +86,17 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
     i = 0;
 
     while(!acabou(arq)) {
-        char *vet = (char*) malloc(sizeof(char) * (qtdIdeal + 1));
+        /*char *vet = (char*) malloc(sizeof(char) * (qtdIdeal + 1));
 
         fgets(vet, qtdIdeal, arq);
 
-        for(i = 0; i <= strlen(vet); i++) {
+        for(i = 0; i < strlen(vet); i++) {
             freq[(unsigned char)vet[i]]++;
         }
         free(vet);
-        setPorcentagem(b, ++porcent);
-        /*char at = lerChar(arq);
-        freq[(unsigned char)at]++;*/
+        setPorcentagem(b, ++porcent);*/
+        char at = lerChar(arq);
+        freq[(unsigned char)at]++;
         //setPorcentagem(b, ++i);
     }
     avancarParte(b);

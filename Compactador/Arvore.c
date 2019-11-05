@@ -83,6 +83,7 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
         desenfileirar(filaTudo);
     } else {
         enfileirar(filaValida, desenfileirar(filaTudo));
+        printf("%i\n", (*filaValida)->indice);
     }
 }
 
@@ -134,7 +135,7 @@ CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
 
         adicionaNaFila(&filaTudo, &filaValida, fim, &atual);
 
-        setPorcentagem(b, i++);
+        //setPorcentagem(b, i++);
     }
 
     inverterFila(&filaValida);

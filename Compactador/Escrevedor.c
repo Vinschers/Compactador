@@ -163,15 +163,16 @@ void escreverDescompactador(No *no, char *path, int iniCompact, char qtdLixo)
 
         while(!acabou(arqEntrada))
         {
-            fgets(lido, qtdIdeal, arqEntrada);
+            /*fgets(lido, qtdIdeal, arqEntrada);
 
             fflush(arqEntrada);
 
             for(j = 0; j <= strlen(lido); j++)
-            {
-                charAtual = lido[j];
+            {*/
+                //charAtual = lido[j];
+                charAtual = lerChar(arqEntrada);
 
-                for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo && j == strlen(lido)) && i < 8; i++)
+                for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
                 {
                     if((bitEsquerda >> i) & charAtual)
                         atual = (atual) -> dir;
@@ -184,7 +185,7 @@ void escreverDescompactador(No *no, char *path, int iniCompact, char qtdLixo)
                         atual = no;
                     }
                 }
-            }
+            //}
         }
 
         fclose(arqEntrada);
