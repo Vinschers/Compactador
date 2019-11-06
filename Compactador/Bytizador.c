@@ -35,24 +35,27 @@ void removerByte(char **str)
     //strcpy(*str, &(*str[8]));
 }
 
-char* charsParaString(char vet[])
+char* charsParaString(unsigned char vet[], int tamStr)
 {
-    int i, move = 128;
-    char *ret = (char*) malloc(sizeof(char) * (sizeof(vet) * 8 + 1));
+    int i, move = 0b10000000;
+    char *ret = (char*) malloc(sizeof(char) * (tamStr * 8 + 1));
 
-    for(i = 0; i < sizeof(vet); i++)
+    for(i = 0; i < tamStr; i++)
     {
         int b;
 
+        move = 0b10000000;
+
         for(b = 0; b < 8; b++)
         {
-            if((move >> b) & vet[i])
+            if(move & vet[i])
                 ret[(i * 8) + b] = '1';
             else
                 ret[(i * 8) + b] = '0';
+            move = move >> 1;
         }
     }
-    ret[i * 8] = '\0';
+    ret[tamStr * 8] = '\0';
 
     return ret;
 }

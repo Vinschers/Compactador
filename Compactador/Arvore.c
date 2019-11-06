@@ -47,7 +47,7 @@ No* montarArvore(Barra *b, NoFila *fila, int qtdFila) {
 
 void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char **atual)
 {
-    int tamanhoNovo = strlen(*atual) + 1;
+    int tamanhoNovo = 2 * strlen(*atual) + 1;
     char novo[tamanhoNovo];
     *atual = f->cod;
     strcpy(novo, *atual);
@@ -216,13 +216,16 @@ No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
     return raiz;
 }
 
-No* arqParaArvore(char *path, int *iniCompact, char *lixo)
+No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
 {
     FILE *arqEntrada = NULL;
-    char altura, lixAl;
-    char *arvStr;
+    unsigned char altura, lixAl;
+    unsigned char *arvStr;
     short int qtdNos = 0, qtdNosValidos = 0;
+    unsigned int *coutB = (unsigned int*)malloc(sizeof(unsigned int));
     No *arv = NULL;
+
+    avancarParte(b);
 
     abrir(&arqEntrada, path, "rb");
 
@@ -234,18 +237,30 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo)
     lixAl = lixAl >> 4;
     altura = lixAl + 1;
 
-    qtdNos = (int)(pow(2, altura) - 1);
     qtdNosValidos = (short int) lerChar(arqEntrada) + 1;
 
+    qtdNos = (int)(pow(2, altura) - 1);
+
+    setMaxPorcentagem(b, qtdNos + 2 + qtdNosValidos);
+
+    *coutB = 2;
+
+    setPorcentagem(b, *coutB);
+
     {
-        arvStr = (char*)malloc((qtdNos + 1) * sizeof(char));
-        char string[(int)ceil(qtdNos/8)]; /* possui lixo */
+        int tamString = ((int)ceil(qtdNos/8)) + 1, i;
+        unsigned char string[tamString]; /* possui lixo */
+        arvStr = (char*)malloc((qtdNos + 2) * sizeof(char));
 
         arvStr[qtdNos] = '\0';
 
-        fread(string, sizeof(char), sizeof(arvStr), arqEntrada);
+        fread(string, sizeof(char), tamString, arqEntrada);
 
-        strncpy(arvStr, charsParaString(string), qtdNos);
+        *coutB += qtdNos;
+        setPorcentagem(b, *coutB);
+
+        strcpy(arvStr, charsParaString(string, tamString));
+        arvStr[qtdNos] = '\0';
     }
 
     {
@@ -253,15 +268,19 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo)
 
         fread(bytes, sizeof(char), qtdNosValidos, arqEntrada);
 
+        *coutB += qtdNosValidos;
+        setPorcentagem(b, *coutB);
+
         bytes[qtdNosValidos] = '\0';
 
-        printf("\n");
         arv = montarArvoreBalanc((int) altura, arvStr, bytes);
     }
 
     *iniCompact = ftell(arqEntrada);
 
     fclose(arqEntrada);
+
+    free(coutB);
 
     return arv;
 }
@@ -287,15 +306,14 @@ void destruirCodCab(CodCab *cc, int qtd)
 
     free(cc->cabecalho);
 
-    /*{
+    {
         int i;
 
-        for(i = 0; i < qtd; i++)
+        for(i = 0; i < qtd; ++i)
         {
-            char *c = cc->cods[i].cod;
-            //free(c);
+            //free(cc->cods[i].cod);
         }
-    }*/
+    }
 
     free(cc->cods);
     free(cc);

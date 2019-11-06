@@ -19,6 +19,7 @@ typedef struct
     unsigned int porcentagem[2];
     int y;
     int parteAtual;
+    char modo;
 } Barra;
 
 extern No* novoNo();
@@ -27,4 +28,5 @@ extern void setMaxPorcentagem(Barra *b, unsigned int m);
 extern void setPorcentagem(Barra *b, unsigned int p);
 extern void avancarParte(Barra *b);
 extern void resetarBarra(Barra *b);
+extern void setModo(Barra *b, char modo);
 #endif

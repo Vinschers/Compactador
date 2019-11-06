@@ -61,8 +61,9 @@ void descompactar()
 
     atexit(sairDescompactar);
 
-    arvore = arqParaArvore(path, iniCompact, qtdLixo);
-    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo);
+    arvore = arqParaArvore(path, iniCompact, qtdLixo, &barra);
+
+    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo, &barra);
 }
 
 char *get_path() {
@@ -86,12 +87,14 @@ int main(int qtdArgs, char *args[]) {
     }
     if (strstr(path, extensao))
     {
+        barra.modo = 1;
         printf("Descompactando \"%s\"...", path);
         barra.y = ++y;
         descompactar();
     }
     else
     {
+        barra.modo = 0;
         printf("Compactando \"%s\"...", path);
         barra.y = ++y;
         compactar();

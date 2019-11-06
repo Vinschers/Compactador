@@ -64,13 +64,28 @@ void setPorcentagem(Barra *b, unsigned int p)
 
 void printarStatus(Barra b)
 {
-    static char status[5][16] = {"LENDO", "MONTANDO FILA", "MONTANDO ARVORE", "OBTENDO CODIGOS", "ESCREVENDO"};
+    static char status[5][18];
+    if (!b.modo)
+    {
+        strcpy(status[0], "LENDO");
+        strcpy(status[1], "MONTANDO FILA");
+        strcpy(status[2], "MONTANDO ARVORE");
+        strcpy(status[3], "OBTENDO CODIGOS");
+        strcpy(status[4], "ESCREVENDO");
+    }
+    else
+    {
+        strcpy(status[0], "REMONTANDO ARVORE");
+        strcpy(status[1], "ESCREVENDO");
+    }
+
     char *barra = (char*)malloc(150 * sizeof(char));
     char *parte = (char*)malloc((strlen(status[b.parteAtual]) + 3) * sizeof(char));
-    char *preenchimento = (char*)malloc(2 * sizeof(char));
+    char *preenchimento = (char*)malloc(2*sizeof(char));
     int i;
-    preenchimento[1] = '\0';
+
     preenchimento[0] = 178;
+    preenchimento[1] = 0;
     strcpy(barra, "\0");
     strcpy(parte, "[");
     strcat(parte, status[b.parteAtual]);
@@ -79,7 +94,7 @@ void printarStatus(Barra b)
         strcat(barra, preenchimento);
     limparLinha();
 
-    printf("%-18s %c %d%% |%-25s|", parte, b.atual, b.porcentagem[0], barra);
+    printf("%-20s %c %d%% |%-25s|", parte, b.atual, b.porcentagem[0], barra);
 
     free(barra);
     free(parte);
@@ -102,4 +117,9 @@ void resetarBarra(Barra *b)
     b->parteAtual = -1;
     b->porcentagem[0] = 0;
     b->porcentagem[1] = 0;
+}
+
+void setModo(Barra *b, char modo)
+{
+    b->modo = modo;
 }

@@ -66,10 +66,11 @@ No* pop(NoFila **fila) {
 
 int montarFila(Barra *b, char *path, NoFila **fila) {
     FILE* arq;
-    int qtdChars = 1;
+    long int qtdChars = 1;
     int qtdFila;
     unsigned long long int freq[256];
-    int i, porcent = 0;
+    long int i, porcent = 0;
+    char *lido;
 
     abrir(&arq, path, "rb");
 
@@ -80,21 +81,43 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
 
     fseek(arq, 0, SEEK_END);
     qtdChars = ftell(arq);
-    fseek(arq, 0, SEEK_SET);
+    rewind(arq);
+
+    porcent = (long int) qtdChars / 100;
+
     setMaxPorcentagem(b, qtdChars);
 
-    i = 0;
+    lido = (char*)malloc((qtdChars + 1) * sizeof(char));
 
-    while(!acabou(arq)) {
-        unsigned char at = lerChar(arq);
+    fread(lido, qtdChars, 1, arq);
+
+    for (i = 0; i < qtdChars + 1; i++)
+    {
+        unsigned char at = lido[i];
         freq[(unsigned char)at]++;
-        i++;
-        setPorcentagem(b, ++i);
+        if ( porcent == 0 || i % porcent == 0)
+            setPorcentagem(b, i);
     }
+    free(lido);
+
+    /*i = 0;
+
+    while(!acabou(arq))
+    {
+        unsigned char at = lerChar(arq);
+        freq[at]++;
+        setPorcentagem(b, ++i);
+    }*/
+
+    fclose(arq);
+
+    setPorcentagem(b, i);
     avancarParte(b);
     setMaxPorcentagem(b, 255);
+
     qtdFila = 0;
     *fila = novaFila();
+
     for (i = 0; i < 256; ++i) {
         if (freq[i] > 0) {
             No *n = (No*)malloc(sizeof(No));
@@ -110,8 +133,6 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
         }
         setPorcentagem(b, i);
     }
-
-    fclose(arq);
 
     return qtdFila;
 }
