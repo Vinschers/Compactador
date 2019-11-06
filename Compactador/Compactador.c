@@ -8,6 +8,8 @@
 #include "Arvore.h"
 #include "Escrevedor.h"
 
+#define extensao ".loli"
+
 char *path;
 Barra barra;
 
@@ -36,15 +38,20 @@ void sairDescompactar()
 }
 
 void compactar() {
+    int i;
     atexit(sairCompactar);
 
-    qtd = montarFila(&barra, path, &fila);
+    for (i = 0; i < 1; i++) {
+        qtd = montarFila(&barra, path, &fila);
 
-    arvore = montarArvore(&barra, fila, qtd);
+        arvore = montarArvore(&barra, fila, qtd);
 
-    codCab = arvoreParaVetor(&barra, arvore, qtd);
+        codCab = arvoreParaVetor(&barra, arvore, qtd);
 
-    escreverCompactador(&barra, path, codCab, getAltura(arvore), qtd);
+        escreverCompactador(&barra, path, codCab, getAltura(arvore), qtd, extensao);
+        printf("\n\n");
+        resetarBarra(&barra);
+    }
 }
 
 void descompactar()
@@ -55,7 +62,7 @@ void descompactar()
     atexit(sairDescompactar);
 
     arvore = arqParaArvore(path, iniCompact, qtdLixo);
-    escreverDescompactador(arvore, path, *iniCompact, *qtdLixo);
+    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo);
 }
 
 char *get_path() {
@@ -77,7 +84,7 @@ int main(int qtdArgs, char *args[]) {
         path = get_path();
         y++;
     }
-    if (strstr(path, ".loli")) //extensao passivel de mudanca
+    if (strstr(path, extensao))
     {
         printf("Descompactando \"%s\"...", path);
         barra.y = ++y;

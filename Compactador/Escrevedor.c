@@ -50,7 +50,7 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
     }
 }
 
-void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd)
+void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd, char *extensao)
 {
     FILE *arqEntrada, *arqSaida;
     unsigned char *flush = (unsigned char*) malloc(10000 * sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
@@ -61,7 +61,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     int bsl = (int)ceil(bytesStrLouca);
 
     abrir(&arqEntrada, path, "rb");
-    abrir(&arqSaida, strcat(path, ".loli"), "wb");
+    abrir(&arqSaida, strcat(path, extensao), "wb");
     avancarParte(b);
 
     setMaxPorcentagem(b, 2 + bsl + qtd + qtdBytesArq(arqEntrada));
@@ -135,12 +135,12 @@ void escreverChar(unsigned char c, No **atual, No *raiz, FILE *arqEntrada, FILE 
     }
 }*/
 
-void escreverDescompactador(No *no, char *path, int iniCompact, char qtdLixo)
+void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo)
 {
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
 
-    path[strlen(path) - 5] = '\0';
+    path[strlen(path) - strlen(extensao)] = '\0';
 
     arqSaida = fopen(path, "wb");
 

@@ -88,6 +88,7 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
     while(!acabou(arq)) {
         unsigned char at = lerChar(arq);
         freq[(unsigned char)at]++;
+        i++;
         setPorcentagem(b, ++i);
     }
     avancarParte(b);

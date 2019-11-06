@@ -96,3 +96,10 @@ void limparLinha()
 {
     printf("\r");
 }
+
+void resetarBarra(Barra *b)
+{
+    b->parteAtual = -1;
+    b->porcentagem[0] = 0;
+    b->porcentagem[1] = 0;
+}

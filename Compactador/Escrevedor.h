@@ -2,7 +2,7 @@
 #define Escrevedor
 #include "Arvore.h"
 
-extern void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd);
-extern void escreverDescompactador(No* no, char *path, int iniCompact, char qtdLixo);
+extern void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd, char *extensao);
+extern void escreverDescompactador(No* no, char *path, char *extensao, int iniCompact, char qtdLixo);
 
 #endif // Escrevedor

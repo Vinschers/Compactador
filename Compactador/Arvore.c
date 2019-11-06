@@ -47,8 +47,9 @@ No* montarArvore(Barra *b, NoFila *fila, int qtdFila) {
 
 void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char **atual)
 {
+    int tamanhoNovo = strlen(*atual) + 1;
+    char novo[tamanhoNovo];
     *atual = f->cod;
-    char novo[strlen(*atual) + 1];
     strcpy(novo, *atual);
 
     if (f->dado->dir != NULL) {
@@ -57,7 +58,7 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
         strcat(novo, "1");
 
         n->dado = f->dado->dir;
-        n->cod = (char*) malloc((strlen(*atual) + 1) * sizeof(char));
+        n->cod = (char*) malloc(tamanhoNovo * sizeof(char));
         n->indice = f->indice * 2 + 2;
         strcpy(n->cod, novo);
 
@@ -72,7 +73,7 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
         strcat(novo, "0");
 
         n->dado = f->dado->esq;
-        n->cod = (char*) malloc((strlen(*atual) + 1) * sizeof(char));
+        n->cod = (char*) malloc(tamanhoNovo * sizeof(char));
         n->indice = f->indice * 2 + 1;
         strcpy(n->cod, novo);
 

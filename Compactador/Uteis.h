@@ -26,5 +26,5 @@ extern void avancarSimboloBarra(Barra *b);
 extern void setMaxPorcentagem(Barra *b, unsigned int m);
 extern void setPorcentagem(Barra *b, unsigned int p);
 extern void avancarParte(Barra *b);
-void limparLinha();
+extern void resetarBarra(Barra *b);
 #endif
