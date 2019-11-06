@@ -174,7 +174,7 @@ void printarArv(No *a)
     printarArv(a->dir);
 }
 
-No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
+No* montarArvoreBalanc(int h, char *arvStr, unsigned char *bytes)
 {
     No *raiz = novoNo();
     NoFilAr *fila = novaFilAr(raiz);
@@ -188,7 +188,7 @@ No* montarArvoreBalanc(int h, char *arvStr, char *bytes)
             fim->dado->byte = bytes[0];
             fim->dado->valido = True;
 
-            strcpy(bytes, &bytes[1]);
+            strcpy(bytes, &(bytes[1]));
         }
 
         if(fim->h < h)
@@ -254,7 +254,10 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
 
         arvStr[qtdNos] = '\0';
 
-        fread(string, sizeof(char), tamString, arqEntrada);
+        fread(string, sizeof(char), tamString - 1, arqEntrada);
+
+        for (int o = 0; o < tamString; o++)
+            printf("\n%i", string[o]);
 
         *coutB += qtdNos;
         setPorcentagem(b, *coutB);
@@ -264,7 +267,7 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
     }
 
     {
-        char bytes[qtdNosValidos + 1];
+        unsigned char bytes[qtdNosValidos + 1];
 
         fread(bytes, sizeof(char), qtdNosValidos, arqEntrada);
 

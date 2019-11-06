@@ -91,7 +91,7 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
 
     fread(lido, qtdChars, 1, arq);
 
-    for (i = 0; i < qtdChars + 1; i++)
+    for (i = 0; i < qtdChars; i++)
     {
         unsigned char at = lido[i];
         freq[(unsigned char)at]++;

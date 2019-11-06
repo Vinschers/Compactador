@@ -18,13 +18,15 @@ char* getCod(CodByte *vet, unsigned char c, int qtd)
     return "";
 }
 
-void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd) //É necessário controlar qtd (-1 e +1)
+void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //É necessário controlar qtd (-1 e +1)
 {
     unsigned char c = ' ';
 
     fwrite(&c, sizeof(char), 1, arq);
     c = qtd - 1;
     fwrite(&c, sizeof(char), 1, arq); //bits lixo, altura e qtd
+    *coutB += 2;
+    setPorcentagem(b, *coutB);
 
     while(strlen(vets->cabecalho) > 0)
     {
@@ -32,10 +34,8 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd) //É necessário
 
         fwrite(&c, sizeof(char), 1, arq);
 
-        if (strlen(vets->cabecalho) <= 8)
-                strcpy(vets->cabecalho, "");
-        else
-            strcpy(vets->cabecalho, &(vets->cabecalho[8]));
+        removerByte(&vets->cabecalho);
+        setPorcentagem(b, (*coutB)++);
     }
 
     {
@@ -44,7 +44,10 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd) //É necessário
         {
             c = vets->cods[i].byte;
 
+            printf("\n%i", c);
+
             fwrite(&c, sizeof(char), 1, arq);
+            //setPorcentagem(b, (*coutB)++);
         }
     }
 }
@@ -53,67 +56,52 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
 {
     FILE *arqEntrada, *arqSaida;
     unsigned char *flush = (unsigned char*) malloc(10000 * sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
-    unsigned char atual = '\0';
+    unsigned char *atual = (unsigned char*) malloc(sizeof(char));
+    int *coutB = (int*)malloc(sizeof(int));
 
-    int bsl = (int)strlen(vets->cabecalho)/8;
+    float bytesStrLouca = (float)strlen(vets->cabecalho)/8;
+    int bsl = (int)ceil(bytesStrLouca);
 
     abrir(&arqEntrada, path, "rb");
     abrir(&arqSaida, strcat(path, extensao), "wb");
+    avancarParte(b);
 
-    strcpy(flush, "");
+    setMaxPorcentagem(b, 2 + bsl + qtd + qtdBytesArq(arqEntrada));
+    *coutB = 0;
 
-    printarCabecalho(b, arqSaida, vets, qtd);
+    flush[0] = '\0';
+
+    printarCabecalho(b, arqSaida, vets, qtd, coutB);
+    fseek(arqEntrada, 0, SEEK_SET);
 
     {
-        long int i;
-        unsigned char *lido, *cod;
+        int i = 0;
+        unsigned char lido, *cod;
         unsigned char c;
-        long int qtdLeitura = 0, k = 0;
 
-        fseek(arqEntrada, 0, SEEK_END);
-        qtdLeitura = ftell(arqEntrada);
-        rewind(arqEntrada);
-
-        lido = (unsigned char*)malloc((qtdLeitura + 1) * sizeof(char));
-
-        fread(lido, sizeof(char), qtdLeitura, arqEntrada);
-
-        fclose(arqEntrada);
-
-        for (i = 0; i < qtdLeitura; i++)
-        {
-            c = lido[i];
+        while(!acabou(arqEntrada)) {
+            c = lerChar(arqEntrada);
             cod = getCod(vets->cods, c, qtd);
             strcat(flush, cod);
-            k += strlen(cod);
 
-            if (k >= 8) {
-                atual = paraByte(flush);
-                fwrite(&atual, sizeof(char), 1, arqSaida);
-
-                if (k > 8)
-                    strcpy(flush, &flush[8]);
-                else
-                    strcpy(flush, "");
-                k -= 8;
-                if (k < 0) k = 0;
+            while (strlen(flush) >= 8) {
+                *atual = paraByte(flush);
+                fwrite(atual, sizeof(char), 1, arqSaida);
+                removerByte(&flush);
             }
-        }
-        if (k > 0)
-        {
-            atual = paraByte(flush);
-            fwrite(&atual, sizeof(char), 1, arqSaida);
+
+            //setPorcentagem(b, (*coutB)++);
         }
     }
 
 
-    atual = paraByte(flush);
-    fwrite(&atual, sizeof(char), 1, arqSaida); //vai ignorar o lixo de memora pq nao importa mesmo
+    *atual = paraByte(flush);
+    fwrite(atual, sizeof(char), 1, arqSaida); //vai ignorar o lixo de memora pq nao importa mesmo
+    setPorcentagem(b, (*coutB)++);
 
     {
-        char qtdBitsLixo = 8 - strlen(flush);
-        free(flush);
-        char *c = (char*)malloc(sizeof(char));
+        char qtdBitsLixo = strlen(flush)? 8 - strlen(flush) : 0;
+        unsigned char *c = (unsigned char*)malloc(sizeof(char));
         *c = (altura - 1) | (qtdBitsLixo << 4);
 
         fseek(arqSaida, 0, SEEK_SET);
@@ -123,73 +111,68 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
         free(c);
     }
 
+    free(atual);
+    free(coutB);
+
+    fclose(arqEntrada);
     fclose(arqSaida);
 }
 
-void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo, Barra *b)
+/*
+void escreverChar(unsigned char c, No **atual, No *raiz, FILE *arqEntrada, FILE *arqSaida, char qtdLixo) {
+    char bitEsquerda = 0b10000000;
+    int i;
+    for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
+    {
+        if((bitEsquerda >> i) & c)
+            *atual = (*atual) -> dir;
+        else
+            atual = (*atual) -> esq;
+
+        if((*atual)->valido)
+        {
+            fwrite(&(*atual)->byte, sizeof(char), 1, arqSaida);
+            *atual = raiz;
+        }
+    }
+}*/
+
+void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo)
 {
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
-    long int qtdLeitura = 0;
-
-    avancarParte(b);
 
     path[strlen(path) - strlen(extensao)] = '\0';
 
     arqSaida = fopen(path, "wb");
 
-    fseek(arqEntrada, 0, SEEK_END);
-    qtdLeitura = ftell(arqEntrada) - iniCompact;
-    rewind(arqEntrada);
     fseek(arqEntrada, iniCompact, SEEK_SET);
-
-    setMaxPorcentagem(b, qtdLeitura);
 
     {
         No *atual = no;
         unsigned char bitEsquerda = 0b10000000, charAtual;
-        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (qtdLeitura + 1));
-        unsigned char *escrito = (unsigned char*)malloc(sizeof(char) * qtdIdeal);
-        long int i, j, k = 0;
+        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (qtdIdeal + 1));
+        int i, j;
 
-        fread(lido, sizeof(char), qtdLeitura, arqEntrada);
-
-        strcpy(escrito, "");
-
-        for (j = 0; j < qtdLeitura; j++)
+        while(!acabou(arqEntrada))
         {
-            charAtual = lido[j];
-            for(i = 0; !((j == qtdLeitura - 1) && (8 - i == qtdLixo)) && i < 8; i++)
-            {
-                if((bitEsquerda >> i) & charAtual)
-                    atual = (atual) -> dir;
-                else
-                    atual = (atual) -> esq;
-
-                if((atual)->valido)
+                charAtual = lerChar(arqEntrada);
+                for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
                 {
-                    strcat(escrito, &(atual->byte));
-                    escrito[++k] = '\0';
-                    if (k >= 1022)
-                    {
-                        fwrite(escrito, sizeof(char), k, arqSaida);
-                        strcpy(escrito, "");
-                        k = 0;
-                    }
-                    atual = no;
-                }
-            }
-            //setPorcentagem(b, j + 1);
-        }
+                    if((bitEsquerda >> i) & charAtual)
+                        atual = (atual) -> dir;
+                    else
+                        atual = (atual) -> esq;
 
-        if (k > 0)
-        {
-            fwrite(escrito, sizeof(char), k, arqSaida);
+                    if((atual)->valido)
+                    {
+                        fwrite(&(atual)->byte, sizeof(char), 1, arqSaida);
+                        atual = no;
+                    }
+                }
         }
 
         fclose(arqEntrada);
         fclose(arqSaida);
-        free(escrito);
-        free(lido);
     }
 }

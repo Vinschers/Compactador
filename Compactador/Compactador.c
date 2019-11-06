@@ -63,7 +63,9 @@ void descompactar()
 
     arvore = arqParaArvore(path, iniCompact, qtdLixo, &barra);
 
-    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo, &barra);
+    printarArv(arvore);
+
+    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo);
 }
 
 char *get_path() {
