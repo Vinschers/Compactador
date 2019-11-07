@@ -44,8 +44,6 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
         {
             c = vets->cods[i].byte;
 
-            printf("\n%i", c);
-
             fwrite(&c, sizeof(char), 1, arq);
             //setPorcentagem(b, (*coutB)++);
         }
@@ -118,35 +116,23 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     fclose(arqSaida);
 }
 
-/*
-void escreverChar(unsigned char c, No **atual, No *raiz, FILE *arqEntrada, FILE *arqSaida, char qtdLixo) {
-    char bitEsquerda = 0b10000000;
-    int i;
-    for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
-    {
-        if((bitEsquerda >> i) & c)
-            *atual = (*atual) -> dir;
-        else
-            atual = (*atual) -> esq;
-
-        if((*atual)->valido)
-        {
-            fwrite(&(*atual)->byte, sizeof(char), 1, arqSaida);
-            *atual = raiz;
-        }
-    }
-}*/
-
-void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo)
+void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo, Barra *b)
 {
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
+    long int tamArq = 0, cout = 0;
 
     path[strlen(path) - strlen(extensao)] = '\0';
 
     arqSaida = fopen(path, "wb");
 
+    fseek(arqEntrada, 0, SEEK_END);
+    tamArq = ftell(arqEntrada);
     fseek(arqEntrada, iniCompact, SEEK_SET);
+    tamArq -= ftell(arqEntrada);
+
+    avancarParte(b);
+    setMaxPorcentagem(b, tamArq);
 
     {
         No *atual = no;
@@ -156,20 +142,22 @@ void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, 
 
         while(!acabou(arqEntrada))
         {
-                charAtual = lerChar(arqEntrada);
-                for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
-                {
-                    if((bitEsquerda >> i) & charAtual)
-                        atual = (atual) -> dir;
-                    else
-                        atual = (atual) -> esq;
+            charAtual = lerChar(arqEntrada);
 
-                    if((atual)->valido)
-                    {
-                        fwrite(&(atual)->byte, sizeof(char), 1, arqSaida);
-                        atual = no;
-                    }
+            for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
+            {
+                if((bitEsquerda >> i) & charAtual)
+                    atual = (atual) -> dir;
+                else
+                    atual = (atual) -> esq;
+
+                if((atual)->valido)
+                {
+                    fwrite(&(atual)->byte, sizeof(char), 1, arqSaida);
+                    atual = no;
                 }
+            }
+            setPorcentagem(b, ++cout);
         }
 
         fclose(arqEntrada);

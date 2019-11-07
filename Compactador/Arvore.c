@@ -178,6 +178,7 @@ No* montarArvoreBalanc(int h, char *arvStr, unsigned char *bytes)
 {
     No *raiz = novoNo();
     NoFilAr *fila = novaFilAr(raiz);
+    int i = 0;
 
     while(fila)
     {
@@ -185,13 +186,11 @@ No* montarArvoreBalanc(int h, char *arvStr, unsigned char *bytes)
 
         if(arvStr[fim->indice] == '1')
         {
-            fim->dado->byte = bytes[0];
+            fim->dado->byte = bytes[i++];
             fim->dado->valido = True;
-
-            strcpy(bytes, &(bytes[1]));
         }
 
-        if(fim->h < h)
+        if(fim->h < h && fim->dado->valido == False)
         {
             NoFilAr *esq = novaFilAr(novoNo());
             NoFilAr *dir = novaFilAr(novoNo());
@@ -249,21 +248,17 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
 
     {
         int tamString = ((int)ceil(qtdNos/8)) + 1, i;
-        unsigned char string[tamString]; /* possui lixo */
+        unsigned char string[tamString + 1]; /* possui lixo */
         arvStr = (char*)malloc((qtdNos + 2) * sizeof(char));
 
         arvStr[qtdNos] = '\0';
 
-        fread(string, sizeof(char), tamString - 1, arqEntrada);
-
-        for (int o = 0; o < tamString; o++)
-            printf("\n%i", string[o]);
+        fread(string, sizeof(char), tamString, arqEntrada);
 
         *coutB += qtdNos;
         setPorcentagem(b, *coutB);
 
         strcpy(arvStr, charsParaString(string, tamString));
-        arvStr[qtdNos] = '\0';
     }
 
     {

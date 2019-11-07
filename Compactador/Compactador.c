@@ -49,7 +49,6 @@ void compactar() {
         codCab = arvoreParaVetor(&barra, arvore, qtd);
 
         escreverCompactador(&barra, path, codCab, getAltura(arvore), qtd, extensao);
-        printf("\n\n");
         resetarBarra(&barra);
     }
 }
@@ -63,9 +62,7 @@ void descompactar()
 
     arvore = arqParaArvore(path, iniCompact, qtdLixo, &barra);
 
-    printarArv(arvore);
-
-    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo);
+    escreverDescompactador(arvore, path, extensao, *iniCompact, *qtdLixo, &barra);
 }
 
 char *get_path() {
