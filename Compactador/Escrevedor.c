@@ -45,7 +45,7 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
             c = vets->cods[i].byte;
 
             fwrite(&c, sizeof(char), 1, arq);
-            //setPorcentagem(b, (*coutB)++);
+            setPorcentagem(b, (*coutB)++);
         }
     }
 }
@@ -53,9 +53,10 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
 void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd, char *extensao)
 {
     FILE *arqEntrada, *arqSaida;
-    unsigned char *flush = (unsigned char*) malloc(10000 * sizeof(char)); //2 * strlen(vets->cods[qtd - 1].cod) *
-    unsigned char *atual = (unsigned char*) malloc(sizeof(char));
+    unsigned char *flush = (unsigned char*) malloc((1 + pow(2, altura + 1)) * sizeof(char));
+    unsigned char *lido;
     int *coutB = (int*)malloc(sizeof(int));
+    long int tamArq = 0;
 
     float bytesStrLouca = (float)strlen(vets->cabecalho)/8;
     int bsl = (int)ceil(bytesStrLouca);
@@ -64,41 +65,59 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     abrir(&arqSaida, strcat(path, extensao), "wb");
     avancarParte(b);
 
-    setMaxPorcentagem(b, 2 + bsl + qtd + qtdBytesArq(arqEntrada));
+    fseek(arqEntrada, 0, SEEK_END);
+    tamArq = ftell(arqEntrada);
+    rewind(arqEntrada);
+
+    setMaxPorcentagem(b, 3 + bsl + qtd + tamArq);
     *coutB = 0;
 
-    flush[0] = '\0';
+    strcpy(flush, "");
 
     printarCabecalho(b, arqSaida, vets, qtd, coutB);
-    fseek(arqEntrada, 0, SEEK_SET);
+
+    lido = (unsigned char*) malloc ((tamArq + 1) * sizeof(char));
+    strcpy(lido, "");
+
+    fread(lido, sizeof(char), tamArq, arqEntrada);
 
     {
-        int i = 0;
-        unsigned char lido, *cod;
+        int i;
+        unsigned char *cod;
         unsigned char c;
 
-        while(!acabou(arqEntrada)) {
-            c = lerChar(arqEntrada);
+        for(i = 0; i < tamArq; i++)
+        {
+            c = lido[i];
             cod = getCod(vets->cods, c, qtd);
             strcat(flush, cod);
 
             while (strlen(flush) >= 8) {
-                *atual = paraByte(flush);
-                fwrite(atual, sizeof(char), 1, arqSaida);
+                c = paraByte(flush);
+
+                fwrite(&c, sizeof(char), 1, arqSaida);
+
                 removerByte(&flush);
             }
 
-            //setPorcentagem(b, (*coutB)++);
+            if (i % qtdIdeal == 0)
+            {
+                *coutB += i;
+                setPorcentagem(b, *coutB);
+                *coutB -= i;
+            }
         }
+        c = paraByte(flush);
+        fwrite(&c, sizeof(char), 1, arqSaida);
+
+        *coutB += i;
+
+        setPorcentagem(b, *coutB);
     }
 
-
-    *atual = paraByte(flush);
-    fwrite(atual, sizeof(char), 1, arqSaida); //vai ignorar o lixo de memora pq nao importa mesmo
-    setPorcentagem(b, (*coutB)++);
-
     {
-        char qtdBitsLixo = strlen(flush)? 8 - strlen(flush) : 0;
+        //char qtdBitsLixo = strlen(flush)? 8 - strlen(flush) : 0;
+        char qtdBitsLixo = 8 - strlen(flush);
         unsigned char *c = (unsigned char*)malloc(sizeof(char));
         *c = (altura - 1) | (qtdBitsLixo << 4);
 
@@ -106,14 +125,34 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
 
         fwrite(c, sizeof(char), 1, arqSaida);
 
+        setPorcentagem(b, ++(*coutB));
+
         free(c);
     }
 
-    free(atual);
     free(coutB);
 
     fclose(arqEntrada);
     fclose(arqSaida);
+}
+
+void escreverCharDescompactador(unsigned char charAtual, No *no, No **atual, FILE *arqEntrada, FILE *arqSaida, char qtdLixo, boolean ultimaVez)
+{
+    int i, bitEsquerda = 0b10000000;
+
+    for(i = 0; !(ultimaVez && 8 - i == qtdLixo) && i < 8; i++)
+    {
+        if((bitEsquerda >> i) & charAtual)
+            *atual = (*atual) -> dir;
+        else
+            *atual = (*atual) -> esq;
+
+        if((*atual)->valido)
+        {
+            fwrite(&((*atual)->byte), sizeof(char), 1, arqSaida);
+            *atual = no;
+        }
+    }
 }
 
 void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo, Barra *b)
@@ -136,31 +175,25 @@ void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, 
 
     {
         No *atual = no;
-        unsigned char bitEsquerda = 0b10000000, charAtual;
-        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (qtdIdeal + 1));
-        int i, j;
+        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (tamArq + 1)), charAtual;
+        int i;
 
-        while(!acabou(arqEntrada))
+        strcpy(lido, "");
+
+        fread(lido, sizeof(char), tamArq, arqEntrada);
+
+        for (i = 0; i < tamArq; i++)
         {
-            charAtual = lerChar(arqEntrada);
+            charAtual = lido[i];
 
-            for(i = 0; !(acabou(arqEntrada) && 8 - i == qtdLixo) && i < 8; i++)
-            {
-                if((bitEsquerda >> i) & charAtual)
-                    atual = (atual) -> dir;
-                else
-                    atual = (atual) -> esq;
+            escreverCharDescompactador(charAtual, no, &atual, arqEntrada, arqSaida, qtdLixo, i == tamArq - 1);
 
-                if((atual)->valido)
-                {
-                    fwrite(&(atual)->byte, sizeof(char), 1, arqSaida);
-                    atual = no;
-                }
-            }
             setPorcentagem(b, ++cout);
         }
 
         fclose(arqEntrada);
         fclose(arqSaida);
+
+        free(lido);
     }
 }
