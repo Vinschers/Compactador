@@ -37,8 +37,8 @@ void removerByte(char **str)
             ret[i] = (*str)[8 + i];
         }
 
-        free(*str);
-        *str = ret;
+        strcpy(*str, ret);
+        free(ret);
     }
 }
 

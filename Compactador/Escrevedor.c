@@ -110,8 +110,11 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
             }
         }
 
-        c = paraByte(flush);
-        fwrite(&c, sizeof(char), 1, arqSaida);
+        if(strlen(flush) > 0)
+        {
+            c = paraByte(flush);
+            fwrite(&c, sizeof(char), 1, arqSaida);
+        }
 
         *coutB += i;
 

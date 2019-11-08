@@ -86,6 +86,12 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
 
     abrir(&arq, path, "rb");
 
+    if (qtdBytesArq(arq) == 0)
+    {
+        printf("\n\nArquivo vazio!\n");
+        exit(0);
+    }
+
     avancarParte(b);
 
     for (i = 0; i < 256; ++i)
