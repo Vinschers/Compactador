@@ -66,7 +66,7 @@ No* pop(NoFila **fila) {
 
 int montarFila(Barra *b, char *path, NoFila **fila) {
     FILE* arq;
-    long int qtdChars = 1;
+    unsigned long long int qtdChars = 1;
     int qtdFila;
     unsigned long long int freq[256];
     long int i, porcent = 0;

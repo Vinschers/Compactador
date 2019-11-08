@@ -102,7 +102,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
                 removerByte(&flush);
             }
 
-            if (i % qtdIdeal == 0)
+            if (i % qtdIdeal * qtdIdeal == 0)
             {
                 *coutB += i;
                 setPorcentagem(b, *coutB);
@@ -196,8 +196,15 @@ void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, 
 
             escreverCharDescompactador(charAtual, no, &atual, arqEntrada, arqSaida, qtdLixo, i == tamArq - 1);
 
-            setPorcentagem(b, ++cout);
+            if (i % qtdIdeal * qtdIdeal == 0)
+            {
+                cout += i;
+                setPorcentagem(b, cout);
+                cout -= i;
+            }
         }
+
+        setPorcentagem(b, cout + i);
 
         fclose(arqEntrada);
         fclose(arqSaida);

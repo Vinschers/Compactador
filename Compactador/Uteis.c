@@ -81,12 +81,13 @@ void printarStatus(Barra b)
 
     char *barra = (char*)malloc(150 * sizeof(char));
     char *parte = (char*)malloc((strlen(status[b.parteAtual]) + 3) * sizeof(char));
+    char *parteGirando = (char*)malloc(2 * sizeof(char));
     char *preenchimento = (char*)malloc(2*sizeof(char));
     int i;
 
     preenchimento[0] = 178;
     preenchimento[1] = 0;
-    strcpy(barra, "\0");
+    strcpy(barra, "");
     strcpy(parte, "[");
     strcat(parte, status[b.parteAtual]);
     strcat(parte, "]");
@@ -94,7 +95,9 @@ void printarStatus(Barra b)
         strcat(barra, preenchimento);
     limparLinha();
 
-    printf("%-20s %c %d%% |%-25s|", parte, b.atual, b.porcentagem[0], barra);
+    strcpy(parteGirando, &b.atual);
+
+    printf("%-20s %s    %d%% |%-25s|", parte, b.porcentagem[0] == 100?"OK":parteGirando, b.porcentagem[0], barra);
 
     free(barra);
     free(parte);
@@ -102,8 +105,11 @@ void printarStatus(Barra b)
 
 void avancarParte(Barra *b)
 {
+    char maxParte = 5;
+    if (b->modo == 1)
+        maxParte = 2;
     b->parteAtual++;
-    printf("\n\nParte %i/5:\n\n", b->parteAtual + 1);
+    printf("\n\nParte %i/%i:\n\n", b->parteAtual + 1, maxParte);
     b->y++;
 }
 

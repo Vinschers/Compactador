@@ -304,7 +304,7 @@ void destruirCodCab(CodCab *cc, int qtd)
 
         for(i = 0; i < qtd; ++i)
         {
-            //free(cc->cods[i].cod);
+            free(cc->cods[i].cod);
         }
     }
 
