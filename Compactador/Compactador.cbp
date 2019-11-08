@@ -54,9 +54,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="FilaPrioridade.h" />
-		<Unit filename="FilaPrioridadeTeste.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="Leitor.c">
 			<Option compilerVar="CC" />
 		</Unit>

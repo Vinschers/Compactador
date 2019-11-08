@@ -19,6 +19,7 @@ No* novoNo()
 void avancarSimboloBarra(Barra *b)
 {
     char a = b->atual;
+
     switch(a)
     {
         case '|':
@@ -52,19 +53,24 @@ void setPorcentagem(Barra *b, uInteiro p)
     static inteiro k = 0;
     inteiro d = b->porcentagem[1];
     flutuante f = (flutuante)p / d;
+
     f *= 100;
+
     if (f >= k * 0.005f)
     {
         avancarSimboloBarra(b);
         k++;
     }
+
     b->porcentagem[0] = (uInteiro)f;
+
     printarStatus(*b);
 }
 
 void printarStatus(Barra b)
 {
     static char status[5][18];
+
     if (!b.modo)
     {
         strcpy(status[0], "LENDO");
@@ -79,36 +85,41 @@ void printarStatus(Barra b)
         strcpy(status[1], "ESCREVENDO");
     }
 
+    {
+        char *barra = (char*)malloc(150 * sizeof(char));
+        char *parte = (char*)malloc((strlen(status[b.parteAtual]) + 3) * sizeof(char));
+        char *parteGirando = (char*)malloc(2 * sizeof(char));
+        char *preenchimento = (char*)malloc(2*sizeof(char));
+        int i;
 
-    char *barra = (char*)malloc(150 * sizeof(char));
-    char *parte = (char*)malloc((strlen(status[b.parteAtual]) + 3) * sizeof(char));
-    char *parteGirando = (char*)malloc(2 * sizeof(char));
-    char *preenchimento = (char*)malloc(2*sizeof(char));
-    int i;
+        preenchimento[0] = 178;
+        preenchimento[1] = 0;
 
-    preenchimento[0] = 178;
-    preenchimento[1] = 0;
-    strcpy(barra, "");
-    strcpy(parte, "[");
-    strcat(parte, status[b.parteAtual]);
-    strcat(parte, "]");
-    for (i = 0; i < b.porcentagem[0]/4; i++)
-        strcat(barra, preenchimento);
-    limparLinha();
+        strcpy(barra, "");
+        strcpy(parte, "[");
+        strcat(parte, status[b.parteAtual]);
+        strcat(parte, "]");
 
-    strcpy(parteGirando, &b.atual);
+        for (i = 0; i < b.porcentagem[0]/4; i++)
+            strcat(barra, preenchimento);
+        limparLinha();
 
-    printf("%-20s %s    %d%% |%-25s|", parte, b.porcentagem[0] == 100?"OK":parteGirando, b.porcentagem[0], barra);
+        strcpy(parteGirando, &b.atual);
 
-    free(barra);
-    free(parte);
+        printf("%-20s %s    %d%% |%-25s|", parte, b.porcentagem[0] == 100?"OK":parteGirando, b.porcentagem[0], barra);
+
+        free(barra);
+        free(parte);
+    }
 }
 
 void avancarParte(Barra *b)
 {
     char maxParte = 5;
+
     if (b->modo == 1)
         maxParte = 2;
+
     b->parteAtual++;
     printf("\n\nParte %i/%i:\n\n", b->parteAtual + 1, maxParte);
     b->y++;

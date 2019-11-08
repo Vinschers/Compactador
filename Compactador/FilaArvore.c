@@ -71,6 +71,7 @@ void inverterFila(NoFilAr** fila)
         antecessor = atual;
         atual = aux;
     }
+
     *fila = antecessor;
 }
 

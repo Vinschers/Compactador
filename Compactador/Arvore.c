@@ -21,7 +21,9 @@ No* montarArvore(Barra *b, NoFila *fila, inteiro qtdFila) {
     inteiro qtdOriginal = qtdFila;
     inteiro qtdNos = qtdFila;
     avancarParte(b);
+
     setMaxPorcentagem(b, qtdFila - 1);
+
     while(qtdFila >= 2) {
         No *primeiro = pop(&fila);
         No *segundo = pop(&fila);
@@ -50,6 +52,7 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
     inteiro tamanhoNovo = 2 * strlen(*atual) + 1;
     char novo[tamanhoNovo];
     *atual = f->cod;
+
     strcpy(novo, *atual);
 
     if (f->dado->dir != NULL) {
@@ -140,11 +143,13 @@ CodCab* arvoreParaVetor(Barra *b, No *no, inteiro qtd)
 
     inverterFila(&filaValida);
 
-    NoFilAr *per = filaValida;
+    {
+        NoFilAr *per = filaValida;
 
-    for(i = 0; per != NULL; i++) {
-        cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
-        per = per->prox;
+        for(i = 0; per != NULL; i++) {
+            cods[i] = *novaCodByte(per->cod, (unsigned char)per->dado->byte);
+            per = per->prox;
+        }
     }
 
     destruirFilAr(filaTudo);

@@ -40,7 +40,6 @@ void removerByte(char **str)
         free(*str);
         *str = ret;
     }
-    //strcpy(*str, &(*str[8]));
 }
 
 char* charsParaString(unsigned char vet[], inteiro tamStr)

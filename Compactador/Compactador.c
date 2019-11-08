@@ -68,7 +68,6 @@ void descompactar()
 char *get_path() {
     char *ret = (char*)malloc(sizeof(char) * 256);
     printf("Digite o local do arquivo a ser compactado ou descompactado: ");
-    //scanf("%255s", ret);
     gets(ret);
     return ret;
 }

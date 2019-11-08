@@ -9,21 +9,26 @@ NoFila* inserir(NoFila *raiz, No *novo) {
     NoFila *atual = raiz;
     NoFila *nf = (NoFila*)malloc(sizeof(NoFila));
     No *novoNo = (No*)malloc(sizeof(No));
+
     novoNo->byte = novo->byte;
     novoNo->vezes = novo->vezes;
     novoNo->esq = novo->esq;
     novoNo->dir = novo->dir;
     novoNo->valido = novo->valido;
+
     nf->dado = novoNo;
     nf->valida = True;
 
     if (atual == NULL)
         atual = novaFila();
+
     if(atual->dado == NULL) {
         atual->dado = novoNo;
         atual->valida = True;
         return atual;
-    } else {
+    }
+
+    else {
         if (atual->dado->vezes > novo->vezes) {
             nf->prox = atual;
             return nf;
@@ -35,8 +40,10 @@ NoFila* inserir(NoFila *raiz, No *novo) {
                     break;
                 atual = atual-> prox;
             }
+
             nf->prox = atual->prox;
             atual->prox = nf;
+
             return raiz;
         }
     }
@@ -44,13 +51,16 @@ NoFila* inserir(NoFila *raiz, No *novo) {
 
 NoFila* novaFila() {
     NoFila *raiz = (NoFila*)malloc(sizeof(NoFila));
+
     raiz->dado = NULL;
     raiz->prox = NULL;
+
     return raiz;
 }
 
 void printarFila(NoFila *fila) {
     NoFila* per = fila;
+
     while(per != NULL)
     {
         printf("char %i: %llu\n", per -> dado -> byte, (ullInteiro)per->dado->vezes);
@@ -60,7 +70,9 @@ void printarFila(NoFila *fila) {
 
 No* pop(NoFila **fila) {
     No *ret = (*fila)->dado;
+
     *fila = (*fila)->prox;
+
     return ret;
 }
 
@@ -100,15 +112,6 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
     }
     free(lido);
 
-    /*i = 0;
-
-    while(!acabou(arq))
-    {
-        unsigned char at = lerChar(arq);
-        freq[at]++;
-        setPorcentagem(b, ++i);
-    }*/
-
     fclose(arq);
 
     setPorcentagem(b, i);
@@ -122,13 +125,17 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
         if (freq[i] > 0) {
             No *n = (No*)malloc(sizeof(No));
             unsigned char c = (unsigned char)i;
+
             n->byte = c;
             n->vezes = freq[i];
             n->valido = True;
             n->dir = NULL;
             n->esq = NULL;
+
             *fila = inserir(*fila, n);
+
             qtdFila++;
+
             free(n);
         }
         setPorcentagem(b, i);

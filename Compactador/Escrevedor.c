@@ -11,6 +11,7 @@
 char* getCod(CodByte *vet, unsigned char c, inteiro qtd)
 {
     inteiro i;
+
     for (i = 0; i < qtd; ++i)
         if (vet[i].byte == c)
             return vet[i].cod;
@@ -59,7 +60,6 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
     unsigned char *lido;
     inteiro *coutB = (inteiro*)malloc(sizeof(inteiro));
     lInteiro tamArq = 0;
-
     flutuante bytesStrLouca = (flutuante)strlen(vets->cabecalho)/8;
     inteiro bsl = (inteiro)ceil(bytesStrLouca);
 
@@ -109,6 +109,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
                 *coutB -= i;
             }
         }
+
         c = paraByte(flush);
         fwrite(&c, sizeof(char), 1, arqSaida);
 
@@ -118,24 +119,17 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
     }
 
     {
-        //char qtdBitsLixo = strlen(flush)? 8 - strlen(flush) : 0;
         char qtdBitsLixo = 8 - strlen(flush);
 
         if(qtdBitsLixo == 8)
             qtdBitsLixo = 0;
 
-        //unsigned char *c = (unsigned char*)malloc(sizeof(char));
-        //*c = (altura - 1) | (qtdBitsLixo << 4);
-
         fseek(arqSaida, 0, SEEK_SET);
 
-        //fwrite(c, sizeof(char), 1, arqSaida);
         fwrite(&qtdBitsLixo, sizeof(char), 1, arqSaida);
         fwrite(&altura, sizeof(char), 1, arqSaida);
 
         setPorcentagem(b, ++(*coutB));
-
-        //free(c);
     }
 
     free(coutB);
