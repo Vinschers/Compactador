@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "Bytizador.h"
 
 char paraByte(char *strByte)
@@ -22,16 +23,22 @@ void removerByte(char **str)
 {
     if (strlen(*str) < 8)
     {
-        *str = "";
+        *str[0] = '\0';
         return;
     }
-    char *ret = (char*) malloc((strlen(*str) - 8) * sizeof(char));
-    int i = 0;
 
-    for(; (*str)[7 + i] != '\0'; i++)
-        ret[i] = (*str)[8 + i];
+    {
+        char *ret = (char*) malloc((strlen(*str) + 1) * sizeof(char));
+        int i = 0;
 
-    *str = ret;
+        for(; (*str)[7 + i] != '\0'; i++)
+        {
+            ret[i] = (*str)[8 + i];
+        }
+
+        free(*str);
+        *str = ret;
+    }
     //strcpy(*str, &(*str[8]));
 }
 

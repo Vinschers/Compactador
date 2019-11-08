@@ -8,7 +8,7 @@ typedef struct NoFilAr
     struct NoFilAr* prox;
     No* dado;
     char* cod;
-    short int indice;
+    int indice;
     char h;
 } NoFilAr;
 

@@ -23,8 +23,10 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
     unsigned char c = ' ';
 
     fwrite(&c, sizeof(char), 1, arq);
+    c = qtd - 2;
+    fwrite(&c, sizeof(char), 1, arq);
     c = qtd - 1;
-    fwrite(&c, sizeof(char), 1, arq); //bits lixo, altura e qtd
+    fwrite(&c, sizeof(char), 1, arq);
     *coutB += 2;
     setPorcentagem(b, *coutB);
 
@@ -118,16 +120,22 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     {
         //char qtdBitsLixo = strlen(flush)? 8 - strlen(flush) : 0;
         char qtdBitsLixo = 8 - strlen(flush);
-        unsigned char *c = (unsigned char*)malloc(sizeof(char));
-        *c = (altura - 1) | (qtdBitsLixo << 4);
+
+        if(qtdBitsLixo == 8)
+            qtdBitsLixo = 0;
+
+        //unsigned char *c = (unsigned char*)malloc(sizeof(char));
+        //*c = (altura - 1) | (qtdBitsLixo << 4);
 
         fseek(arqSaida, 0, SEEK_SET);
 
-        fwrite(c, sizeof(char), 1, arqSaida);
+        //fwrite(c, sizeof(char), 1, arqSaida);
+        fwrite(&qtdBitsLixo, sizeof(char), 1, arqSaida);
+        fwrite(&altura, sizeof(char), 1, arqSaida);
 
         setPorcentagem(b, ++(*coutB));
 
-        free(c);
+        //free(c);
     }
 
     free(coutB);

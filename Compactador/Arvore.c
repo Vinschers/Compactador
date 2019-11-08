@@ -220,7 +220,7 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
     FILE *arqEntrada = NULL;
     unsigned char altura, lixAl;
     unsigned char *arvStr;
-    short int qtdNos = 0, qtdNosValidos = 0;
+    int qtdNos = 0, qtdNosValidos = 0;
     unsigned int *coutB = (unsigned int*)malloc(sizeof(unsigned int));
     No *arv = NULL;
 
@@ -228,13 +228,8 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
 
     abrir(&arqEntrada, path, "rb");
 
-    lixAl = lerChar(arqEntrada);
-
-    *lixo = lixAl >> 4;
-
-    lixAl = lixAl << 4;
-    lixAl = lixAl >> 4;
-    altura = lixAl + 1;
+    *lixo = lerChar(arqEntrada);
+    altura = lerChar(arqEntrada);
 
     qtdNosValidos = (short int) lerChar(arqEntrada) + 1;
 
