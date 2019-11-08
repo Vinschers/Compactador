@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include "Bytizador.h"
+#include "Uteis.h"
 
 char paraByte(char *strByte)
 {
     char ret = 0;
     char adiUm = 1;
-    int tam = strlen(strByte);
-    int i;
+    inteiro tam = strlen(strByte);
+    inteiro i;
 
     for(i = 0; i < 8; i++)
     {
@@ -29,7 +30,7 @@ void removerByte(char **str)
 
     {
         char *ret = (char*) malloc((strlen(*str) + 1) * sizeof(char));
-        int i = 0;
+        inteiro i = 0;
 
         for(; (*str)[7 + i] != '\0'; i++)
         {
@@ -42,14 +43,14 @@ void removerByte(char **str)
     //strcpy(*str, &(*str[8]));
 }
 
-char* charsParaString(unsigned char vet[], int tamStr)
+char* charsParaString(unsigned char vet[], inteiro tamStr)
 {
-    int i, move = 0b10000000;
+    inteiro i, move = 0b10000000;
     char *ret = (char*) malloc(sizeof(char) * (tamStr * 8 + 1));
 
     for(i = 0; i < tamStr; i++)
     {
-        int b;
+        inteiro b;
 
         move = 0b10000000;
 

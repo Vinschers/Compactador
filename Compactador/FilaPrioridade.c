@@ -53,7 +53,7 @@ void printarFila(NoFila *fila) {
     NoFila* per = fila;
     while(per != NULL)
     {
-        printf("char %i: %llu\n", per -> dado -> byte, (unsigned long long int)per->dado->vezes);
+        printf("char %i: %llu\n", per -> dado -> byte, (ullInteiro)per->dado->vezes);
         per = per -> prox;
     }
 }
@@ -64,12 +64,12 @@ No* pop(NoFila **fila) {
     return ret;
 }
 
-int montarFila(Barra *b, char *path, NoFila **fila) {
+inteiro montarFila(Barra *b, char *path, NoFila **fila) {
     FILE* arq;
-    long int qtdChars = 1;
-    int qtdFila;
-    unsigned long long int freq[256];
-    long int i, porcent = 0;
+    ullInteiro qtdChars = 1;
+    inteiro qtdFila;
+    ullInteiro freq[256];
+    lInteiro i, porcent = 0;
     char *lido;
 
     abrir(&arq, path, "rb");
@@ -83,7 +83,7 @@ int montarFila(Barra *b, char *path, NoFila **fila) {
     qtdChars = ftell(arq);
     rewind(arq);
 
-    porcent = (long int) qtdChars / 100;
+    porcent = (lInteiro) qtdChars / 100;
 
     setMaxPorcentagem(b, qtdChars);
 

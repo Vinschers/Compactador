@@ -17,7 +17,7 @@ unsigned char lerChar(FILE *arq) {
     return ret;
 }
 
-char* lerVariosChars(FILE *arq, int qtdChars) {
+char* lerVariosChars(FILE *arq, inteiro qtdChars) {
     char *vet = (char*) malloc(sizeof(char) * (qtdChars + 1));
     fread(vet, sizeof(char), qtdChars, arq);
     vet[qtdChars] = '\0';
@@ -26,18 +26,18 @@ char* lerVariosChars(FILE *arq, int qtdChars) {
 
 
 boolean acabou(FILE *arq) {
-    int atual = ftell(arq);
+    inteiro atual = ftell(arq);
     fseek(arq, 0, SEEK_END);
-    int fim = ftell(arq);
+    inteiro fim = ftell(arq);
     fseek(arq, atual, SEEK_SET);
     return atual == fim;
 }
 
-int qtdBytesArq(FILE *arq)
+inteiro qtdBytesArq(FILE *arq)
 {
-    int atual = ftell(arq);
+    inteiro atual = ftell(arq);
     fseek(arq, 0, SEEK_END);
-    int fim = ftell(arq);
+    inteiro fim = ftell(arq);
     fseek(arq, atual, SEEK_SET);
     return fim;
 }

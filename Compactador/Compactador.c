@@ -17,10 +17,10 @@ Barra barra;
 NoFila *fila = NULL;
 No *arvore = NULL;
 CodCab *codCab = NULL;
-int qtd = 0;
+inteiro qtd = 0;
 
 /* Descompactar */
-int *iniCompact;
+inteiro *iniCompact;
 char *qtdLixo;
 
 void sairCompactar()
@@ -38,7 +38,7 @@ void sairDescompactar()
 }
 
 void compactar() {
-    int i;
+    inteiro i;
     atexit(sairCompactar);
 
     for (i = 0; i < 1; i++) {
@@ -55,7 +55,7 @@ void compactar() {
 
 void descompactar()
 {
-    iniCompact = (int*) malloc(sizeof(int));
+    iniCompact = (inteiro*) malloc(sizeof(inteiro));
     qtdLixo = (char*) malloc(sizeof(char));
 
     atexit(sairDescompactar);
@@ -71,8 +71,9 @@ char *get_path() {
     scanf("%255s", ret);
     return ret;
 }
+
 int main(int qtdArgs, char *args[]) {
-    int y = 0;
+    inteiro y = 0;
     path = (char*)malloc(256 * sizeof(char));
 
     barra.parteAtual = -1;

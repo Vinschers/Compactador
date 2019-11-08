@@ -17,9 +17,9 @@ CodByte* novaCodByte(char* cod, char byte)
     return ret;
 }
 
-No* montarArvore(Barra *b, NoFila *fila, int qtdFila) {
-    int qtdOriginal = qtdFila;
-    int qtdNos = qtdFila;
+No* montarArvore(Barra *b, NoFila *fila, inteiro qtdFila) {
+    inteiro qtdOriginal = qtdFila;
+    inteiro qtdNos = qtdFila;
     avancarParte(b);
     setMaxPorcentagem(b, qtdFila - 1);
     while(qtdFila >= 2) {
@@ -47,7 +47,7 @@ No* montarArvore(Barra *b, NoFila *fila, int qtdFila) {
 
 void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char **atual)
 {
-    int tamanhoNovo = 2 * strlen(*atual) + 1;
+    inteiro tamanhoNovo = 2 * strlen(*atual) + 1;
     char novo[tamanhoNovo];
     *atual = f->cod;
     strcpy(novo, *atual);
@@ -89,13 +89,13 @@ void adicionaNaFila(NoFilAr **filaTudo, NoFilAr **filaValida, NoFilAr *f, char *
 
 int getAltura(No *no)
 {
-    int ret = 0;
+    inteiro ret = 0;
 
     if(no == NULL)
         return ret;
 
     {
-        int alEsq = getAltura(no->esq), alDir = getAltura(no->dir);
+        inteiro alEsq = getAltura(no->esq), alDir = getAltura(no->dir);
 
         if(alEsq > alDir)
             ret = alEsq + 1;
@@ -106,13 +106,13 @@ int getAltura(No *no)
     return ret;
 }
 
-CodCab* arvoreParaVetor(Barra *b, No *no, int qtd)
+CodCab* arvoreParaVetor(Barra *b, No *no, inteiro qtd)
 {
     CodByte *cods = (CodByte*)malloc(qtd * sizeof(CodByte));
     NoFilAr *filaTudo = NULL;
     NoFilAr *filaValida = NULL;
-    int i;
-    int tamVetor = (int)pow(2, getAltura(no));
+    inteiro i;
+    inteiro tamVetor = (inteiro)pow(2, getAltura(no));
     char *atual = "\0";
     char arvVetor[tamVetor];
 
@@ -174,11 +174,11 @@ void printarArv(No *a)
     printarArv(a->dir);
 }
 
-No* montarArvoreBalanc(int h, char *arvStr, unsigned char *bytes)
+No* montarArvoreBalanc(inteiro h, char *arvStr, unsigned char *bytes)
 {
     No *raiz = novoNo();
     NoFilAr *fila = novaFilAr(raiz);
-    int i = 0;
+    inteiro i = 0;
 
     while(fila)
     {
@@ -215,13 +215,14 @@ No* montarArvoreBalanc(int h, char *arvStr, unsigned char *bytes)
     return raiz;
 }
 
-No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
+No* arqParaArvore(char *path, inteiro *iniCompact, char *lixo, Barra *b)
 {
     FILE *arqEntrada = NULL;
     unsigned char altura, lixAl;
     unsigned char *arvStr;
-    int qtdNos = 0, qtdNosValidos = 0;
-    unsigned int *coutB = (unsigned int*)malloc(sizeof(unsigned int));
+    inteiro qtdNos = 0;
+    sInteiro qtdNosValidos = 0;
+    uInteiro *coutB = (inteiro*)malloc(sizeof(inteiro));
     No *arv = NULL;
 
     avancarParte(b);
@@ -231,9 +232,9 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
     *lixo = lerChar(arqEntrada);
     altura = lerChar(arqEntrada);
 
-    qtdNosValidos = (short int) lerChar(arqEntrada) + 1;
+    qtdNosValidos = (sInteiro) lerChar(arqEntrada) + 1;
 
-    qtdNos = (int)(pow(2, altura) - 1);
+    qtdNos = (inteiro)(pow(2, altura) - 1);
 
     setMaxPorcentagem(b, qtdNos + 2 + qtdNosValidos);
 
@@ -242,7 +243,7 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
     setPorcentagem(b, *coutB);
 
     {
-        int tamString = ((int)ceil(qtdNos/8)) + 1, i;
+        inteiro tamString = ((inteiro)ceil(qtdNos/8)) + 1, i;
         unsigned char string[tamString + 1]; /* possui lixo */
         arvStr = (char*)malloc((qtdNos + 2) * sizeof(char));
 
@@ -266,7 +267,7 @@ No* arqParaArvore(char *path, int *iniCompact, char *lixo, Barra *b)
 
         bytes[qtdNosValidos] = '\0';
 
-        arv = montarArvoreBalanc((int) altura, arvStr, bytes);
+        arv = montarArvoreBalanc((inteiro) altura, arvStr, bytes);
     }
 
     *iniCompact = ftell(arqEntrada);
@@ -292,7 +293,7 @@ void destruirArv(No *no)
     free(no);
 }
 
-void destruirCodCab(CodCab *cc, int qtd)
+void destruirCodCab(CodCab *cc, inteiro qtd)
 {
     if(cc == NULL || qtd <= 0)
         return;
@@ -300,7 +301,7 @@ void destruirCodCab(CodCab *cc, int qtd)
     free(cc->cabecalho);
 
     {
-        int i;
+        inteiro i;
 
         for(i = 0; i < qtd; ++i)
         {

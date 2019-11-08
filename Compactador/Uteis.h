@@ -1,6 +1,14 @@
 #ifndef Uteis
 #define qtdIdeal 1024
 #define Uteis
+
+typedef int inteiro;
+typedef short int sInteiro;
+typedef unsigned int uInteiro;
+typedef long int lInteiro;
+typedef float flutuante;
+typedef unsigned long long int ullInteiro;
+
 typedef enum {
     False, True
 } boolean;

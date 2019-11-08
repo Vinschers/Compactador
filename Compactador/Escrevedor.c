@@ -8,9 +8,9 @@
 #include "Arvore.h"
 #include "FilaArvore.h"
 
-char* getCod(CodByte *vet, unsigned char c, int qtd)
+char* getCod(CodByte *vet, unsigned char c, inteiro qtd)
 {
-    int i;
+    inteiro i;
     for (i = 0; i < qtd; ++i)
         if (vet[i].byte == c)
             return vet[i].cod;
@@ -18,7 +18,7 @@ char* getCod(CodByte *vet, unsigned char c, int qtd)
     return "";
 }
 
-void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //É necessário controlar qtd (-1 e +1)
+void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, inteiro qtd, inteiro *coutB) //É necessário controlar qtd (-1 e +1)
 {
     unsigned char c = ' ';
 
@@ -41,7 +41,7 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
     }
 
     {
-        int i;
+        inteiro i;
         for(i = 0; i < qtd; i++)
         {
             c = vets->cods[i].byte;
@@ -52,16 +52,16 @@ void printarCabecalho(Barra *b, FILE *arq, CodCab *vets, int qtd, int *coutB) //
     }
 }
 
-void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd, char *extensao)
+void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, inteiro qtd, char *extensao)
 {
     FILE *arqEntrada, *arqSaida;
     unsigned char *flush = (unsigned char*) malloc((1 + pow(2, altura + 1)) * sizeof(char));
     unsigned char *lido;
-    int *coutB = (int*)malloc(sizeof(int));
-    long int tamArq = 0;
+    inteiro *coutB = (inteiro*)malloc(sizeof(inteiro));
+    lInteiro tamArq = 0;
 
-    float bytesStrLouca = (float)strlen(vets->cabecalho)/8;
-    int bsl = (int)ceil(bytesStrLouca);
+    flutuante bytesStrLouca = (flutuante)strlen(vets->cabecalho)/8;
+    inteiro bsl = (inteiro)ceil(bytesStrLouca);
 
     abrir(&arqEntrada, path, "rb");
     abrir(&arqSaida, strcat(path, extensao), "wb");
@@ -84,7 +84,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
     fread(lido, sizeof(char), tamArq, arqEntrada);
 
     {
-        int i;
+        inteiro i;
         unsigned char *cod;
         unsigned char c;
 
@@ -146,7 +146,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, int altura, int qtd
 
 void escreverCharDescompactador(unsigned char charAtual, No *no, No **atual, FILE *arqEntrada, FILE *arqSaida, char qtdLixo, boolean ultimaVez)
 {
-    int i, bitEsquerda = 0b10000000;
+    inteiro i, bitEsquerda = 0b10000000;
 
     for(i = 0; !(ultimaVez && 8 - i == qtdLixo) && i < 8; i++)
     {
@@ -163,11 +163,11 @@ void escreverCharDescompactador(unsigned char charAtual, No *no, No **atual, FIL
     }
 }
 
-void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, char qtdLixo, Barra *b)
+void escreverDescompactador(No *no, char *path, char *extensao, inteiro iniCompact, char qtdLixo, Barra *b)
 {
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
-    long int tamArq = 0, cout = 0;
+    lInteiro tamArq = 0, cout = 0;
 
     path[strlen(path) - strlen(extensao)] = '\0';
 
@@ -184,7 +184,7 @@ void escreverDescompactador(No *no, char *path, char *extensao, int iniCompact, 
     {
         No *atual = no;
         unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (tamArq + 1)), charAtual;
-        int i;
+        inteiro i;
 
         strcpy(lido, "");
 

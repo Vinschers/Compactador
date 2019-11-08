@@ -13,6 +13,6 @@ NoFila *novaFila();
 NoFila *inserir(NoFila* raiz, No* novo);
 No* pop(NoFila **fila);
 extern void printarFila(NoFila *fila);
-extern int montarFila(Barra *b, char* path, NoFila **fila);
+extern inteiro montarFila(Barra *b, char* path, NoFila **fila);
 
 #endif
