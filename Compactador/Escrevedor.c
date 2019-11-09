@@ -62,6 +62,8 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
     lInteiro tamArq = 0;
     flutuante bytesStrLouca = (flutuante)strlen(vets->cabecalho)/8;
     inteiro bsl = (inteiro)ceil(bytesStrLouca);
+    ullInteiro qtdLeitura = 1;
+    inteiro ler = qtdIdeal*qtdIdeal;
 
     abrir(&arqEntrada, path, "rb");
     abrir(&arqSaida, strcat(path, extensao), "wb");
@@ -78,36 +80,44 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
 
     printarCabecalho(b, arqSaida, vets, qtd, coutB);
 
-    lido = (unsigned char*) malloc ((tamArq + 1) * sizeof(char));
+    lido = (unsigned char*) malloc ((qtdIdeal * qtdIdeal + 1) * sizeof(char));
     strcpy(lido, "");
-
-    fread(lido, sizeof(char), tamArq, arqEntrada);
 
     {
         inteiro i;
         unsigned char *cod;
         unsigned char c;
 
-        for(i = 0; i < tamArq; i++)
+        for(; !acabou(arqEntrada); qtdLeitura)
         {
-            c = lido[i];
-            cod = getCod(vets->cods, c, qtd);
-            strcat(flush, cod);
-
-            while (strlen(flush) >= 8) {
-                c = paraByte(flush);
-
-                fwrite(&c, sizeof(char), 1, arqSaida);
-
-                removerByte(&flush);
-            }
-
-            if (i % qtdIdeal * qtdIdeal == 0)
+            if(qtdLeitura * qtdIdeal * qtdIdeal > tamArq)
             {
-                *coutB += i;
-                setPorcentagem(b, *coutB);
-                *coutB -= i;
+                if(tamArq < qtdIdeal * qtdIdeal)
+                    ler = tamArq;
+                else
+                    ler = tamArq - (qtdLeitura - 1) * qtdIdeal * qtdIdeal;
             }
+
+            fread(lido, sizeof(char), ler, arqEntrada);
+
+            for(i = 0; i < ler; i++)
+            {
+                c = lido[i];
+                cod = getCod(vets->cods, c, qtd);
+                strcat(flush, cod);
+
+                while (strlen(flush) >= 8) {
+                    c = paraByte(flush);
+
+                    fwrite(&c, sizeof(char), 1, arqSaida);
+
+                    removerByte(&flush);
+                }
+            }
+
+            *coutB += ler;
+            setPorcentagem(b, *coutB);
+
         }
 
         if(strlen(flush) > 0)
@@ -118,6 +128,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
 
         *coutB += i;
 
+        free(lido);
         setPorcentagem(b, *coutB);
     }
 
@@ -204,14 +215,10 @@ void escreverDescompactador(No *no, char *path, char *extensao, inteiro iniCompa
                 charAtual = lido[i];
 
                 escreverCharDescompactador(charAtual, no, &atual, arqEntrada, arqSaida, qtdLixo, (i == ler - 1 && acabou(arqEntrada)));
-
-                if (i % qtdIdeal * qtdIdeal == 0)
-                {
-                    cout += i;
-                    setPorcentagem(b, cout);
-                    cout -= i;
-                }
             }
+            cout += ler;
+
+            setPorcentagem(b, cout);
         }
 
         setPorcentagem(b, cout + i);

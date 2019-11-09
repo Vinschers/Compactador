@@ -42,10 +42,10 @@ boolean acabou(FILE *arq) {
     return atual == fim;
 }
 
-inteiro qtdBytesArq(FILE *arq)
+ullInteiro qtdBytesArq(FILE *arq)
 {
-    inteiro atual = ftell(arq);
-    inteiro fim;
+    ullInteiro atual = ftell(arq);
+    ullInteiro fim;
 
     fseek(arq, 0, SEEK_END);
 
