@@ -116,6 +116,7 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
         if ( porcent == 0 || i % porcent == 0)
             setPorcentagem(b, i);
     }
+    setPorcentagem(b, qtdChars);    //pra ficar 100% no fim
     free(lido);
 
     fclose(arq);

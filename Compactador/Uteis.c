@@ -56,6 +56,9 @@ void setPorcentagem(Barra *b, uInteiro p)
 
     f *= 100;
 
+    if (f >= 99.9999)
+        f = 100;
+
     if (f >= k * 0.005f)
     {
         avancarSimboloBarra(b);
