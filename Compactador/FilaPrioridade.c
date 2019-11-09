@@ -83,6 +83,8 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
     ullInteiro freq[256];
     lInteiro i, porcent = 0;
     char *lido;
+    ullInteiro qtdLeitura = 1;
+    inteiro ler = qtdIdeal*qtdIdeal;
 
     abrir(&arq, path, "rb");
 
@@ -105,17 +107,29 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
 
     setMaxPorcentagem(b, qtdChars);
 
-    lido = (char*)malloc((qtdChars + 1) * sizeof(char));
+    lido = (char*)malloc((qtdIdeal * qtdIdeal + 1) * sizeof(char));
 
-    fread(lido, qtdChars, 1, arq);
-
-    for (i = 0; i < qtdChars; i++)
+    for(; !acabou(arq); qtdLeitura++)
     {
-        unsigned char at = lido[i];
-        freq[(unsigned char)at]++;
-        if ( porcent == 0 || i % porcent == 0)
-            setPorcentagem(b, i);
+        if(qtdLeitura * qtdIdeal * qtdIdeal > qtdChars)
+        {
+            if(qtdChars < qtdIdeal * qtdIdeal)
+                ler = qtdChars;
+            else
+                ler = qtdChars - (qtdLeitura - 1) * qtdIdeal * qtdIdeal;
+        }
+
+        fread(lido, ler, 1, arq);
+
+        for (i = 0; i < ler; i++)
+        {
+            unsigned char at = lido[i];
+            freq[(unsigned char)at]++;
+            if ( porcent == 0 || i % porcent == 0)
+                setPorcentagem(b, i);
+        }
     }
+
     setPorcentagem(b, qtdChars);    //pra ficar 100% no fim
     free(lido);
 

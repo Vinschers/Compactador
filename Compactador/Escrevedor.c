@@ -165,6 +165,8 @@ void escreverDescompactador(No *no, char *path, char *extensao, inteiro iniCompa
     FILE *arqEntrada = fopen(path, "rb");
     FILE *arqSaida;
     lInteiro tamArq = 0, cout = 0;
+    ullInteiro qtdLeitura = 1;
+    inteiro ler = qtdIdeal*qtdIdeal;
 
     path[strlen(path) - strlen(extensao)] = '\0';
 
@@ -180,24 +182,35 @@ void escreverDescompactador(No *no, char *path, char *extensao, inteiro iniCompa
 
     {
         No *atual = no;
-        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * (tamArq + 1)), charAtual;
+        unsigned char *lido = (unsigned char*) malloc(sizeof(char) * qtdIdeal * qtdIdeal + 1), charAtual;
         inteiro i;
 
         strcpy(lido, "");
 
-        fread(lido, sizeof(char), tamArq, arqEntrada);
-
-        for (i = 0; i < tamArq; i++)
+        for(; !acabou(arqEntrada); qtdLeitura)
         {
-            charAtual = lido[i];
-
-            escreverCharDescompactador(charAtual, no, &atual, arqEntrada, arqSaida, qtdLixo, i == tamArq - 1);
-
-            if (i % qtdIdeal * qtdIdeal == 0)
+            if(qtdLeitura * qtdIdeal * qtdIdeal > tamArq)
             {
-                cout += i;
-                setPorcentagem(b, cout);
-                cout -= i;
+                if(tamArq < qtdIdeal * qtdIdeal)
+                    ler = tamArq;
+                else
+                    ler = tamArq - (qtdLeitura - 1) * qtdIdeal * qtdIdeal;
+            }
+
+            fread(lido, sizeof(char), ler, arqEntrada);
+
+            for (i = 0; i < ler; i++)
+            {
+                charAtual = lido[i];
+
+                escreverCharDescompactador(charAtual, no, &atual, arqEntrada, arqSaida, qtdLixo, (i == ler - 1 && acabou(arqEntrada)));
+
+                if (i % qtdIdeal * qtdIdeal == 0)
+                {
+                    cout += i;
+                    setPorcentagem(b, cout);
+                    cout -= i;
+                }
             }
         }
 
