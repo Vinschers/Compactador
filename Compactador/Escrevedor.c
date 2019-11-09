@@ -88,7 +88,7 @@ void escreverCompactador(Barra *b, char *path, CodCab *vets, inteiro altura, int
         unsigned char *cod;
         unsigned char c;
 
-        for(; !acabou(arqEntrada); qtdLeitura)
+        for(; !acabou(arqEntrada); qtdLeitura++)
         {
             if(qtdLeitura * qtdIdeal * qtdIdeal > tamArq)
             {
@@ -198,7 +198,7 @@ void escreverDescompactador(No *no, char *path, char *extensao, inteiro iniCompa
 
         strcpy(lido, "");
 
-        for(; !acabou(arqEntrada); qtdLeitura)
+        for(; !acabou(arqEntrada); qtdLeitura++)
         {
             if(qtdLeitura * qtdIdeal * qtdIdeal > tamArq)
             {

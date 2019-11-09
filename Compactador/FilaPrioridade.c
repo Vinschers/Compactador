@@ -81,9 +81,10 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
     ullInteiro qtdChars = 1;
     inteiro qtdFila;
     ullInteiro freq[256];
-    lInteiro i, porcent = 0;
+    lInteiro i;
     char *lido;
     ullInteiro qtdLeitura = 1;
+    ullInteiro count = 0;
     inteiro ler = qtdIdeal*qtdIdeal;
 
     abrir(&arq, path, "rb");
@@ -102,8 +103,6 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
     fseek(arq, 0, SEEK_END);
     qtdChars = ftell(arq);
     rewind(arq);
-
-    porcent = (lInteiro) qtdChars / 100;
 
     setMaxPorcentagem(b, qtdChars);
 
@@ -125,9 +124,10 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
         {
             unsigned char at = lido[i];
             freq[(unsigned char)at]++;
-            if ( porcent == 0 || i % porcent == 0)
-                setPorcentagem(b, i);
         }
+
+        count += ler;
+        setPorcentagem(b, count);
     }
 
     setPorcentagem(b, qtdChars);    //pra ficar 100% no fim
@@ -135,7 +135,6 @@ inteiro montarFila(Barra *b, char *path, NoFila **fila) {
 
     fclose(arq);
 
-    setPorcentagem(b, i);
     avancarParte(b);
     setMaxPorcentagem(b, 255);
 
